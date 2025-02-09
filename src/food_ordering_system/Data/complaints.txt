@@ -1,0 +1,4 @@
+Complaint ID, Customer ID, Title, Message, Manager Reply
+COMP001, C001, "Cluttered Table Arrangements", "Please arrange the table properly, like in grid or whatever.", "We will assign people to rearrange the table arrangements soon"
+COMP002, C001, "Vendor Bad Attitude", "Most of the vendors here treat their customers like shit. But they cook good though", "We will apply rules for the vendor to treat their customers properly. Thank you!"
+COMP003, C001, "Foul Trash Stench", "There is a foul odour because of the dumpster nearby. It is cutting off my appetite", "We will call the authorities. Thank you for reporting!"

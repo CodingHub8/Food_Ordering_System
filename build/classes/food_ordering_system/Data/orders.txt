@@ -1,0 +1,2 @@
+Order ID, Vendor ID, itemID(s), Total Amount (RM), Status, Option, Timestamp
+ORD001, V001, [NG1 MG1 NG2], 14.00, Complete, Dine-In, 13/2/2025 14:32

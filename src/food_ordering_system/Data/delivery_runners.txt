@@ -1,0 +1,4 @@
+Runner ID, Name, Password, Rating
+R001, Emily White, runnerpass1, 0.0
+R002, Michael Green, runnerpass2, 0.0
+R003, Sarah Black, runnerpass3, 0.0

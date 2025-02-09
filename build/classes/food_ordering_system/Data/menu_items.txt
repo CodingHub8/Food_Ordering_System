@@ -1,0 +1,2 @@
+Item ID, Vendor ID, Name, Price, Description
+NG1, V001, Nasi Goreng, RM4.50, Nasi Goreng biasa

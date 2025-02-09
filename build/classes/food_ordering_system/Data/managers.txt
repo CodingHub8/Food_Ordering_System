@@ -1,0 +1,2 @@
+Manager ID, Name, Password
+MAN001, Abdullah Kazim Yusof, 12345678

@@ -1,0 +1,4 @@
+Vendor ID, Name, Password, Rating
+V001, Pizza Place, vendorpass1, 0.0
+V002, Burger Joint, vendorpass2, 0.0
+V003, Sushi Bar, vendorpass3, 0.0
