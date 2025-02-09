@@ -7,10 +7,10 @@ import java.util.*;
 import java.util.regex.*;
 
 public class ManagerController {
-    private final String revenueFilePath = "D:/User/Documents/Programming/Java/Netbeans/Netbeans Projects/Food_Ordering_System/src/food_ordering_system/Data/orders.txt";
-    private final String ratingFilePath = "D:/User/Documents/Programming/Java/Netbeans/Netbeans Projects/Food_Ordering_System/src/food_ordering_system/Data/reviews.txt";
-    private final String complaintFilePath= "D:/User/Documents/Programming/Java/Netbeans/Netbeans Projects/Food_Ordering_System/src/food_ordering_system/Data/complaints.txt";
-    private final String itemFilePath = "D:/User/Documents/Programming/Java/Netbeans/Netbeans Projects/Food_Ordering_System/src/food_ordering_system/Data/menu_items.txt";
+    private final String revenueFilePath = "src/food_ordering_system/Data/orders.txt";
+    private final String ratingFilePath = "src/food_ordering_system/Data/reviews.txt";
+    private final String complaintFilePath= "src/food_ordering_system/Data/complaints.txt";
+    private final String itemFilePath = "src/food_ordering_system/Data/menu_items.txt";
 
     private final SimpleDateFormat dayFormat = new SimpleDateFormat("dd/MM/yyyy");
     private final SimpleDateFormat weekFormat = new SimpleDateFormat("w/yyyy");

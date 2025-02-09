@@ -12,7 +12,7 @@ public class LoginRedirect {
             @Override
             public void windowClosing(WindowEvent e) {
                 int choice = JOptionPane.showConfirmDialog(
-                        null,
+                        frame,
                         "Are you sure you want to log out?",
                         "Confirm Logout",
                         JOptionPane.YES_NO_OPTION
@@ -23,5 +23,7 @@ public class LoginRedirect {
                 }
             }
         });
+
+        frame.dispose();
     }
 }

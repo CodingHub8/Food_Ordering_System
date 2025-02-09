@@ -3,7 +3,7 @@ package food_ordering_system.Controller;
 import java.io.*;
 
 public class LoginController {
-    private final String userDataPath = "D:\\User\\Documents\\Programming\\Java\\Netbeans\\Netbeans Projects\\Food_Ordering_System\\src\\food_ordering_system\\Data\\";
+    private final String userDataPath = "src\\food_ordering_system\\Data\\";
 
     public boolean authenticate(String userID, String password) {
         if (userID == null || userID.isEmpty() || password == null || password.isEmpty()) {

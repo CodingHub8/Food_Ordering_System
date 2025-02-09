@@ -1,12 +1,15 @@
 package food_ordering_system.GUI;
 
 import food_ordering_system.Controller.LoginController;
+import food_ordering_system.Utilities.LoadData;
+
 import java.awt.Color;
 import java.util.Arrays;
 
 public class LoginScreen extends javax.swing.JFrame {
     
     public LoginScreen() {
+        new LoadData().generateData();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Food Ordering System");
         initComponents();
