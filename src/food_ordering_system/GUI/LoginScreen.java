@@ -3,6 +3,7 @@ package food_ordering_system.GUI;
 import food_ordering_system.Controller.LoginController;
 import food_ordering_system.Utilities.LoadData;
 
+import javax.swing.*;
 import java.awt.Color;
 import java.util.Arrays;
 
@@ -86,21 +87,27 @@ public class LoginScreen extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         String userID = txtUserID.getText();
-        String password = Arrays.toString(txtPassword.getPassword());
-        
+        String password = new String(txtPassword.getPassword());
+
         boolean authenticated = new LoginController().authenticate(userID, password);
-        
-        dispose();
-        if(userID.startsWith("AD") && authenticated){ //admin
-            new AdministratorDashboard(userID);
-        } else if (userID.startsWith("C") && authenticated){//customer
-            new CustomerDashboard();
-        } else if (userID.startsWith("R") && authenticated){//runner
-            new DeliveryRunnerDashboard();
-        } else if (userID.startsWith("V") && authenticated){//vendor
-            new VendorDashboard();
-        } else if (userID.startsWith("MAN") && authenticated){//manager
-            new ManagerDashboard();
+
+        if (authenticated) {
+            dispose();
+            if (userID.startsWith("AD")) { //admin
+                new AdministratorDashboard(userID);
+            } else if (userID.startsWith("C")) {//customer
+                new CustomerDashboard();
+            } else if (userID.startsWith("R")) {//runner
+                new DeliveryRunnerDashboard();
+            } else if (userID.startsWith("V")) {//vendor
+                new VendorDashboard();
+            } else if (userID.startsWith("MAN")) {//manager
+                new ManagerDashboard();
+            }
+        } else if (userID.equalsIgnoreCase("Enter your user ID") || password.equalsIgnoreCase("Enter your password")) {
+            JOptionPane.showMessageDialog(null, "Please fill in all credentials", "Error", JOptionPane.WARNING_MESSAGE);
+        }else {
+            JOptionPane.showMessageDialog(null, "Invalid user ID or password", "Invalid", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 

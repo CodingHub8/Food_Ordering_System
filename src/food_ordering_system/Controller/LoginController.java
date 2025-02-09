@@ -1,6 +1,7 @@
 package food_ordering_system.Controller;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class LoginController {
     private final String userDataPath = "src\\food_ordering_system\\Data\\";
@@ -18,7 +19,7 @@ public class LoginController {
 
         String userData = getUserData(filePath, userID, password); // Authenticate user
 
-        return true; // Authentication successful
+        return userData != null; // Authentication successful
     }
 
     private String getFilePath(String rolePrefix) {
@@ -40,12 +41,9 @@ public class LoginController {
     private String getUserData(String filePath, String userID, String password) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
+            reader.readLine();//skip header
             while ((line = reader.readLine()) != null) {
                 String[] userDetails = line.split(","); // Assuming CSV format
-
-                if (userDetails.length < 3) {
-                    continue; // Skip malformed lines
-                }
 
                 String storedUserID = userDetails[0].trim();
                 String storedPassword = userDetails[2].trim();
