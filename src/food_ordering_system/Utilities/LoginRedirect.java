@@ -20,10 +20,9 @@ public class LoginRedirect {
 
                 if (choice == JOptionPane.YES_OPTION) {
                     new LoginScreen().setVisible(true); // Open login page
+                    frame.dispose();
                 }
             }
         });
-
-        frame.dispose();
     }
 }

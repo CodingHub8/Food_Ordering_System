@@ -1,18 +1,23 @@
 package food_ordering_system.GUI;
 
+import food_ordering_system.Controller.AdministratorController;
+import food_ordering_system.Model.User;
 import food_ordering_system.Utilities.LoginRedirect;
+import java.awt.Color;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
 
 public class AdministratorDashboard extends javax.swing.JFrame {
+    private final AdministratorController adminController = new AdministratorController();
     
     public AdministratorDashboard(String adminID) {
         setTitle("Admin Interface");
         initComponents();
         lblWelcome.setText("Welcome Admin " + adminID);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         new LoginRedirect().logout(this);
         pack();
         setVisible(true);
@@ -28,6 +33,28 @@ public class AdministratorDashboard extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        frmUserManagement = new javax.swing.JFrame();
+        cboSelectAction = new javax.swing.JComboBox<>();
+        cboSelectUser = new javax.swing.JComboBox<>();
+        pnlSearchBar = new javax.swing.JPanel();
+        txtSearchUserID = new javax.swing.JTextField();
+        btnSearchUser = new javax.swing.JButton();
+        txtUserName = new javax.swing.JTextField();
+        txtUserPassword = new javax.swing.JTextField();
+        btnConfirm = new javax.swing.JButton();
+        frmTopupCustCredit = new javax.swing.JFrame();
+        pnlSearchCustBar = new javax.swing.JPanel();
+        txtSearchCustID = new javax.swing.JTextField();
+        btnSearchCust = new javax.swing.JButton();
+        txtCustName = new javax.swing.JTextField();
+        lblDisplayCustCredit = new javax.swing.JLabel();
+        pnlCustCreditButtons = new javax.swing.JPanel();
+        btnAdd1 = new javax.swing.JButton();
+        btnAdd5 = new javax.swing.JButton();
+        btnAdd10 = new javax.swing.JButton();
+        btnAdd20 = new javax.swing.JButton();
+        btnAdd50 = new javax.swing.JButton();
+        btnConfirmAddCredit = new javax.swing.JButton();
         pnlAdmin = new javax.swing.JPanel();
         lblWelcome = new javax.swing.JLabel();
         btnManageUser = new javax.swing.JButton();
@@ -35,6 +62,196 @@ public class AdministratorDashboard extends javax.swing.JFrame {
         btnGenerateReceipt = new javax.swing.JButton();
         btnSendReceipt = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
+
+        frmUserManagement.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        frmUserManagement.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                frmUserManagementWindowOpened(evt);
+            }
+        });
+        frmUserManagement.getContentPane().setLayout(new javax.swing.BoxLayout(frmUserManagement.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
+
+        cboSelectAction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select action", "Create new user", "View user info", "Update user info", "Delete user info" }));
+        cboSelectAction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboSelectActionActionPerformed(evt);
+            }
+        });
+        frmUserManagement.getContentPane().add(cboSelectAction);
+
+        cboSelectUser.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select User", "Customer", "Vendor", "Runner" }));
+        frmUserManagement.getContentPane().add(cboSelectUser);
+
+        pnlSearchBar.setLayout(new javax.swing.BoxLayout(pnlSearchBar, javax.swing.BoxLayout.LINE_AXIS));
+
+        txtSearchUserID.setText("Search User ID");
+        txtSearchUserID.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtSearchUserIDFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtSearchUserIDFocusLost(evt);
+            }
+        });
+        pnlSearchBar.add(txtSearchUserID);
+
+        btnSearchUser.setIcon(new javax.swing.JLabel() {
+            public javax.swing.Icon getIcon() {
+                try {
+                    return new javax.swing.ImageIcon(
+                        new java.net.URL("https://img.icons8.com/cotton/16/search--v2.png")
+                    );
+                } catch (java.net.MalformedURLException e) {
+                }
+                return null;
+            }
+        }.getIcon());
+        btnSearchUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchUserActionPerformed(evt);
+            }
+        });
+        pnlSearchBar.add(btnSearchUser);
+
+        frmUserManagement.getContentPane().add(pnlSearchBar);
+
+        txtUserName.setText("Name");
+        txtUserName.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtUserNameFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtUserNameFocusLost(evt);
+            }
+        });
+        frmUserManagement.getContentPane().add(txtUserName);
+
+        txtUserPassword.setText("Password");
+        txtUserPassword.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtUserPasswordFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtUserPasswordFocusLost(evt);
+            }
+        });
+        frmUserManagement.getContentPane().add(txtUserPassword);
+
+        btnConfirm.setBackground(new java.awt.Color(0, 204, 0));
+        btnConfirm.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirm.setText("Confirm");
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmActionPerformed(evt);
+            }
+        });
+        frmUserManagement.getContentPane().add(btnConfirm);
+
+        frmTopupCustCredit.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        frmTopupCustCredit.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                frmTopupCustCreditWindowOpened(evt);
+            }
+        });
+        frmTopupCustCredit.getContentPane().setLayout(new javax.swing.BoxLayout(frmTopupCustCredit.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
+
+        pnlSearchCustBar.setLayout(new javax.swing.BoxLayout(pnlSearchCustBar, javax.swing.BoxLayout.LINE_AXIS));
+
+        txtSearchCustID.setText("Search Customer ID");
+        txtSearchCustID.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtSearchCustIDFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtSearchCustIDFocusLost(evt);
+            }
+        });
+        pnlSearchCustBar.add(txtSearchCustID);
+
+        btnSearchCust.setIcon(new javax.swing.JLabel() {
+            public javax.swing.Icon getIcon() {
+                try {
+                    return new javax.swing.ImageIcon(
+                        new java.net.URL("https://img.icons8.com/cotton/16/search--v2.png")
+                    );
+                } catch (java.net.MalformedURLException e) {
+                }
+                return null;
+            }
+        }.getIcon());
+        btnSearchCust.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchCustActionPerformed(evt);
+            }
+        });
+        pnlSearchCustBar.add(btnSearchCust);
+
+        frmTopupCustCredit.getContentPane().add(pnlSearchCustBar);
+
+        txtCustName.setEditable(false);
+        txtCustName.setText("Name");
+        txtCustName.setFocusable(false);
+        frmTopupCustCredit.getContentPane().add(txtCustName);
+
+        lblDisplayCustCredit.setText("0.0 + <new amount>");
+        frmTopupCustCredit.getContentPane().add(lblDisplayCustCredit);
+
+        pnlCustCreditButtons.setLayout(new java.awt.GridBagLayout());
+
+        btnAdd1.setText("RM 1");
+        btnAdd1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdd1ActionPerformed(evt);
+            }
+        });
+        pnlCustCreditButtons.add(btnAdd1, new java.awt.GridBagConstraints());
+
+        btnAdd5.setText("RM 5");
+        btnAdd5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdd5ActionPerformed(evt);
+            }
+        });
+        pnlCustCreditButtons.add(btnAdd5, new java.awt.GridBagConstraints());
+
+        btnAdd10.setText("RM 10");
+        btnAdd10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdd10ActionPerformed(evt);
+            }
+        });
+        pnlCustCreditButtons.add(btnAdd10, new java.awt.GridBagConstraints());
+
+        btnAdd20.setText("RM 20");
+        btnAdd20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdd20ActionPerformed(evt);
+            }
+        });
+        pnlCustCreditButtons.add(btnAdd20, new java.awt.GridBagConstraints());
+
+        btnAdd50.setText("RM 50");
+        btnAdd50.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdd50ActionPerformed(evt);
+            }
+        });
+        pnlCustCreditButtons.add(btnAdd50, new java.awt.GridBagConstraints());
+
+        btnConfirmAddCredit.setBackground(new java.awt.Color(0, 204, 0));
+        btnConfirmAddCredit.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirmAddCredit.setText("Confirm");
+        btnConfirmAddCredit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmAddCreditActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        pnlCustCreditButtons.add(btnConfirmAddCredit, gridBagConstraints);
+
+        frmTopupCustCredit.getContentPane().add(pnlCustCreditButtons);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,6 +269,11 @@ public class AdministratorDashboard extends javax.swing.JFrame {
 
         btnManageUser.setText("User Management");
         btnManageUser.setPreferredSize(new java.awt.Dimension(200, 30));
+        btnManageUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManageUserActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -59,6 +281,11 @@ public class AdministratorDashboard extends javax.swing.JFrame {
 
         btnTopupCredit.setText("Topup Customer Credit");
         btnTopupCredit.setPreferredSize(new java.awt.Dimension(200, 30));
+        btnTopupCredit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTopupCreditActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
@@ -137,6 +364,270 @@ public class AdministratorDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
 
+    private void btnManageUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageUserActionPerformed
+        frmUserManagement.setVisible(true);
+    }//GEN-LAST:event_btnManageUserActionPerformed
+
+    private void frmUserManagementWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmUserManagementWindowOpened
+        frmUserManagement.setTitle("User Management");
+        frmUserManagement.pack();
+        frmUserManagement.setLocationRelativeTo(null);
+        
+        cboSelectUser.setVisible(false);
+        pnlSearchBar.setVisible(false);
+        txtUserName.setVisible(false);
+        txtUserPassword.setVisible(false);
+        btnConfirm.setVisible(false);
+    }//GEN-LAST:event_frmUserManagementWindowOpened
+
+    private void cboSelectActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSelectActionActionPerformed
+        String action = String.valueOf(cboSelectAction.getSelectedItem());
+
+        cboSelectUser.setVisible(false);
+        pnlSearchBar.setVisible(false);
+
+        txtSearchUserID.setText("Search User ID");
+        txtUserName.setText("Name");
+        txtUserName.setEditable(false);
+        txtUserName.setVisible(false);
+        txtUserName.setFocusable(false);
+        txtUserPassword.setText("Password");
+        txtUserPassword.setEditable(false);
+        txtUserPassword.setVisible(false);
+        txtUserPassword.setFocusable(false);
+
+        btnConfirm.setVisible(false);
+        btnConfirm.setBackground(Color.GREEN);
+        btnConfirm.setForeground(Color.BLACK);
+
+        switch (action){
+            case "Create new user" -> {
+                cboSelectUser.setVisible(true);
+                txtUserName.setVisible(true);
+                txtUserName.setEditable(true);
+                txtUserName.setFocusable(true);
+                txtUserPassword.setVisible(true);
+                txtUserPassword.setEditable(true);
+                txtUserPassword.setFocusable(true);
+                btnConfirm.setVisible(true);
+            }
+            
+            case "View user info" -> {
+                pnlSearchBar.setVisible(true);
+                txtUserName.setVisible(true);
+                txtUserPassword.setVisible(true);
+            }
+            
+            case "Update user info" -> {
+                pnlSearchBar.setVisible(true);
+                txtUserName.setVisible(true);
+                txtUserName.setEditable(true);
+                txtUserName.setFocusable(true);
+                txtUserPassword.setVisible(true);
+                txtUserPassword.setEditable(true);
+                txtUserPassword.setFocusable(true);
+                btnConfirm.setVisible(true);
+            }
+            
+            case "Delete user info" -> {
+                pnlSearchBar.setVisible(true);
+                txtUserName.setVisible(true);
+                txtUserName.setEditable(true);
+                txtUserName.setFocusable(true);
+                txtUserPassword.setVisible(true);
+                txtUserPassword.setEditable(true);
+                txtUserPassword.setFocusable(true);
+                
+                btnConfirm.setBackground(Color.RED);
+                btnConfirm.setForeground(Color.WHITE);
+                btnConfirm.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_cboSelectActionActionPerformed
+
+    private void txtSearchUserIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchUserIDFocusGained
+        if(txtSearchUserID.getText().equals("Search User ID")){
+            txtSearchUserID.setText("");
+        }
+    }//GEN-LAST:event_txtSearchUserIDFocusGained
+
+    private void txtSearchUserIDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchUserIDFocusLost
+        if(txtSearchUserID.getText().isEmpty()){
+            txtSearchUserID.setText("Search User ID");
+        }
+    }//GEN-LAST:event_txtSearchUserIDFocusLost
+
+    private void txtUserNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUserNameFocusGained
+        if(txtUserName.getText().equals("Name")){
+            txtUserName.setText("");
+        }
+    }//GEN-LAST:event_txtUserNameFocusGained
+
+    private void txtUserNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUserNameFocusLost
+        if(txtUserName.getText().isEmpty()){
+            txtUserName.setText("Name");
+        }
+    }//GEN-LAST:event_txtUserNameFocusLost
+
+    private void txtUserPasswordFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUserPasswordFocusGained
+        if(txtUserPassword.getText().equals("Password")){
+            txtUserPassword.setText("");
+        }
+    }//GEN-LAST:event_txtUserPasswordFocusGained
+
+    private void txtUserPasswordFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUserPasswordFocusLost
+        if(txtUserPassword.getText().isEmpty()){
+            txtUserPassword.setText("Password");
+        }
+    }//GEN-LAST:event_txtUserPasswordFocusLost
+
+    private void btnSearchUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchUserActionPerformed
+        String userID = txtSearchUserID.getText();
+        String[] userData = adminController.viewUser(userID);
+
+        if(userData != null){
+            txtUserName.setText(userData[1]);
+            txtUserPassword.setText(userData[2]);
+        } else if (txtSearchUserID.getText().equals("Search User ID")){
+            JOptionPane.showMessageDialog(null, "Enter user ID to search");
+        } else {
+            JOptionPane.showMessageDialog(null, "User not found");
+            txtUserName.setText("Name");
+            txtUserPassword.setText("Password");
+        }
+    }//GEN-LAST:event_btnSearchUserActionPerformed
+
+    private void txtSearchCustIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchCustIDFocusGained
+        if(txtSearchCustID.getText().equals("Search Customer ID")){
+            txtSearchCustID.setText("");
+        }
+    }//GEN-LAST:event_txtSearchCustIDFocusGained
+
+    private void txtSearchCustIDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchCustIDFocusLost
+        if(txtSearchCustID.getText().isEmpty()){
+            txtSearchCustID.setText("Search Customer ID");
+        }
+    }//GEN-LAST:event_txtSearchCustIDFocusLost
+
+    private void btnSearchCustActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchCustActionPerformed
+        String custID = txtSearchCustID.getText();
+        String[] custData = adminController.viewUser(custID);
+
+        if(custData != null){
+            txtCustName.setText(custData[1]);
+            lblDisplayCustCredit.setText(custData[3]);
+        } else if (txtSearchCustID.getText().equals("Search Cust ID")){
+            JOptionPane.showMessageDialog(null, "Enter customer ID to search");
+        } else {
+            JOptionPane.showMessageDialog(null, "Customer not found");
+            txtCustName.setText("Name");
+            lblDisplayCustCredit.setText("0.0");
+        }
+    }//GEN-LAST:event_btnSearchCustActionPerformed
+
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
+        String action = String.valueOf(cboSelectAction.getSelectedItem());
+        String user = String.valueOf(cboSelectUser.getSelectedItem());
+
+        switch (action){
+            case "Create new user" -> {
+                int confirm = JOptionPane.showConfirmDialog(null, "Create new user?", "Confirm creation", JOptionPane.YES_NO_OPTION);
+
+                if(confirm == JOptionPane.YES_OPTION){
+                    adminController.createUser(user, txtUserName.getText(), txtUserPassword.getText());
+                    JOptionPane.showMessageDialog(null, "New user added");
+                }
+            }
+
+            case "Update user info" -> {
+                int confirm = JOptionPane.showConfirmDialog(null, "Update user info?", "Confirm update", JOptionPane.YES_NO_OPTION);
+
+                if(confirm == JOptionPane.YES_OPTION){
+                    adminController.updateUser(txtSearchUserID.getText(), txtUserName.getText(), txtUserPassword.getText());
+                    JOptionPane.showMessageDialog(null, "User data updated");
+                }
+            }
+
+            case "Delete user info" -> {
+                int confirm = JOptionPane.showConfirmDialog(null, "Delete user?", "Confirm deletion", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+
+                if(confirm == JOptionPane.YES_OPTION){
+                    adminController.deleteUser(txtSearchUserID.getText());
+                    JOptionPane.showMessageDialog(null, "User data removed");
+                    txtSearchUserID.setText("Search User ID");
+                    txtUserName.setText("Name");
+                    txtUserPassword.setText("Password");
+                }
+            }
+        }
+    }//GEN-LAST:event_btnConfirmActionPerformed
+
+    private void btnConfirmAddCreditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmAddCreditActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(null, "Confirm topup?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if(confirm == JOptionPane.YES_OPTION){
+            String currentLabel = lblDisplayCustCredit.getText(); // Get current label text
+            String[] parts = currentLabel.split(" \\+ "); // Split based on " + "
+
+            double baseCredit = Double.parseDouble(parts[0]); // The original credit
+            double additionalCredit = (parts.length > 1) ? Double.parseDouble(parts[1]) : 0.0;
+
+            adminController.addCustomerCredit(txtSearchCustID.getText(), additionalCredit);
+            String[] customer = adminController.viewUser(txtSearchCustID.getText());
+            lblDisplayCustCredit.setText(customer[3]);
+        }
+    }//GEN-LAST:event_btnConfirmAddCreditActionPerformed
+
+    private void btnTopupCreditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTopupCreditActionPerformed
+        frmTopupCustCredit.setVisible(true);
+    }//GEN-LAST:event_btnTopupCreditActionPerformed
+
+    private void frmTopupCustCreditWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmTopupCustCreditWindowOpened
+        frmTopupCustCredit.setTitle("User Management");
+        lblDisplayCustCredit.setAlignmentX(CENTER_ALIGNMENT);
+        frmTopupCustCredit.pack();
+        frmTopupCustCredit.setLocationRelativeTo(null);
+        
+        pnlSearchCustBar.setVisible(true);
+        txtCustName.setVisible(true);
+        lblDisplayCustCredit.setVisible(true);
+        pnlCustCreditButtons.setVisible(true);
+    }//GEN-LAST:event_frmTopupCustCreditWindowOpened
+
+    private void btnAdd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd1ActionPerformed
+        addCustCredit(1.00);
+    }//GEN-LAST:event_btnAdd1ActionPerformed
+
+    private void btnAdd5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd5ActionPerformed
+        addCustCredit(5.00);
+    }//GEN-LAST:event_btnAdd5ActionPerformed
+
+    private void btnAdd10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd10ActionPerformed
+        addCustCredit(10.00);
+    }//GEN-LAST:event_btnAdd10ActionPerformed
+
+    private void btnAdd20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd20ActionPerformed
+        addCustCredit(20.00);
+    }//GEN-LAST:event_btnAdd20ActionPerformed
+
+    private void btnAdd50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd50ActionPerformed
+        addCustCredit(50.00);
+    }//GEN-LAST:event_btnAdd50ActionPerformed
+
+    private void addCustCredit(double amount){
+        if (!txtCustName.getText().equals("Name") && !txtSearchCustID.getText().equals("Search Customer ID")) {
+            String currentLabel = lblDisplayCustCredit.getText(); // Get current label text
+            String[] parts = currentLabel.split(" \\+ "); // Split based on " + "
+
+            double baseCredit = Double.parseDouble(parts[0]); // The original credit
+            double additionalCredit = (parts.length > 1) ? Double.parseDouble(parts[1]) + amount : amount;
+
+            lblDisplayCustCredit.setText(String.format("%.2f + %.2f", baseCredit, additionalCredit));
+        } else {
+            JOptionPane.showMessageDialog(null, "Search Customer ID before proceeding", "Fill Customer ID", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -173,12 +664,34 @@ public class AdministratorDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd1;
+    private javax.swing.JButton btnAdd10;
+    private javax.swing.JButton btnAdd20;
+    private javax.swing.JButton btnAdd5;
+    private javax.swing.JButton btnAdd50;
+    private javax.swing.JButton btnConfirm;
+    private javax.swing.JButton btnConfirmAddCredit;
     private javax.swing.JButton btnGenerateReceipt;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnManageUser;
+    private javax.swing.JButton btnSearchCust;
+    private javax.swing.JButton btnSearchUser;
     private javax.swing.JButton btnSendReceipt;
     private javax.swing.JButton btnTopupCredit;
+    private javax.swing.JComboBox<String> cboSelectAction;
+    private javax.swing.JComboBox<String> cboSelectUser;
+    private javax.swing.JFrame frmTopupCustCredit;
+    private javax.swing.JFrame frmUserManagement;
+    private javax.swing.JLabel lblDisplayCustCredit;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JPanel pnlAdmin;
+    private javax.swing.JPanel pnlCustCreditButtons;
+    private javax.swing.JPanel pnlSearchBar;
+    private javax.swing.JPanel pnlSearchCustBar;
+    private javax.swing.JTextField txtCustName;
+    private javax.swing.JTextField txtSearchCustID;
+    private javax.swing.JTextField txtSearchUserID;
+    private javax.swing.JTextField txtUserName;
+    private javax.swing.JTextField txtUserPassword;
     // End of variables declaration//GEN-END:variables
 }
