@@ -1,7 +1,5 @@
 package food_ordering_system.Controller;
 
-import food_ordering_system.Model.Vendor;
-
 import java.util.ArrayList;
 import java.util.List;
 

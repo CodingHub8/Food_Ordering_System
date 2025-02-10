@@ -1,5 +1,8 @@
 package food_ordering_system.Controller;
 
+import food_ordering_system.Utilities.IDGenerator;
+
+import javax.swing.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ public class AdministratorController {
         userFilePath = getUserFilePath(user);
         if (userFilePath == null) return;
 
-        String userID = generateUserID(user);
+        String userID = new IDGenerator().generateUserID(user, userFilePath);
         String defaultValue = "0.0";
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(userFilePath, true))) {
@@ -32,37 +35,6 @@ public class AdministratorController {
         } catch (IOException e) {
             throw new RuntimeException("Error creating user: " + e.getMessage());
         }
-    }
-
-    private String generateUserID(String userType) {
-        String prefix = userType.equals("Customer") ? "C" :
-                userType.equals("Vendor") ? "V" :
-                        userType.equals("Runner") ? "R" : null;
-
-        if (prefix == null) return null;
-
-        int nextID = 1;  // Default to C001, R001, V001
-        userFilePath = getUserFilePath(userType);
-        if (userFilePath == null) return null;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(userFilePath))) {
-            String lastLine = null, line;
-            while ((line = br.readLine()) != null) {
-                lastLine = line;
-            }
-
-            if (lastLine != null) {
-                String[] parts = lastLine.split(",");
-                if (parts[0].startsWith(prefix)) {
-                    int lastNum = Integer.parseInt(parts[0].substring(1)); // Extract number
-                    nextID = lastNum + 1; // Increment
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading file for ID generation: " + e.getMessage());
-        }
-
-        return String.format("%s%03d", prefix, nextID); // Format as C001, R002, etc.
     }
 
     public String[] viewUser(String userID) {
@@ -178,6 +150,7 @@ public class AdministratorController {
     public void addCustomerCredit(String custID, double credit) {
         String customerFilePath = "src/food_ordering_system/Data/customers.txt";
         String transactionFilePath = "src/food_ordering_system/Data/transactions.txt";
+        String notificationFilePath = "src/food_ordering_system/Data/notifications.txt";
         List<String> fileContents = new ArrayList<>();
         boolean customerFound = false;
         double updatedCredit = 0.0;
@@ -212,7 +185,7 @@ public class AdministratorController {
             }
 
             // Generate transaction ID and timestamp
-            String transactionID = generateTransactionID();
+            String transactionID = new IDGenerator().generateTransactionID();
             String timestamp = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
 
             // Write transaction to transactions.txt
@@ -222,24 +195,64 @@ public class AdministratorController {
             } catch (IOException e) {
                 throw new RuntimeException("Error writing transaction: " + e.getMessage());
             }
+
+            // Generate notification
+            String notificationID = new IDGenerator().generateNotificationID();
+            String message = String.format("Successfully Top Up RM%.2f at %s", credit, timestamp);
+            String notificationEntry = String.format("%s,%s,Credit Top Up,%s,false", notificationID, custID, message);
+
+            // Write notification to notifications.txt
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(notificationFilePath, true))) {
+                bw.write(notificationEntry);
+                bw.newLine();
+            } catch (IOException e) {
+                throw new RuntimeException("Error writing notification: " + e.getMessage());
+            }
+
+            // Generate and print receipt
+            printReceipt(custID);
         }
     }
 
-    // Generate a unique transaction ID (e.g., T001, T002, etc.)
-    private String generateTransactionID() {
-        String transactionFilePath = "src/food_ordering_system/Data/transactions.txt";
-        int transactionCount = 1;
+    private void printReceipt(String custID) {
+        String notificationFilePath = "src/food_ordering_system/Data/notifications.txt";
+        List<String> fileContents = new ArrayList<>();
+        boolean foundUnread = false;
+        String notificationMessage = null;
+        String notificationID = null;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(transactionFilePath))) {
+        // Read notifications.txt and find unread notifications
+        try (BufferedReader br = new BufferedReader(new FileReader(notificationFilePath))) {
             String line;
-            br.readLine();//skip header
             while ((line = br.readLine()) != null) {
-                transactionCount++;
+                String[] parts = line.split(",");
+
+                if (parts[1].equals(custID) && parts[4].equals("false")) { // Unread notification
+                    notificationMessage = parts[3]; // Message
+                    notificationID = parts[0]; // Notification ID
+                    parts[4] = "true"; // Mark as read
+                    foundUnread = true;
+                }
+                fileContents.add(String.join(",", parts));
             }
         } catch (IOException e) {
-            // If the file does not exist, start from 1
+            throw new RuntimeException("Error reading notifications file: " + e.getMessage());
         }
 
-        return String.format("T%03d", transactionCount);
+        // Show notification popup if unread notifications exist
+        if (foundUnread) {
+            JOptionPane.showMessageDialog(null, notificationMessage, "Transaction Receipt", JOptionPane.INFORMATION_MESSAGE);
+
+            // Update notifications.txt after user acknowledges
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(notificationFilePath))) {
+                for (String line : fileContents) {
+                    bw.write(line);
+                    bw.newLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Error updating notifications file: " + e.getMessage());
+            }
+        }
     }
+
 }

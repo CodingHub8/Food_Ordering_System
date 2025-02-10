@@ -1,1 +1,2 @@
 Transaction ID, Customer ID, Amount, Timestamp
+T001,C001,20.00,11/02/2025 00:00

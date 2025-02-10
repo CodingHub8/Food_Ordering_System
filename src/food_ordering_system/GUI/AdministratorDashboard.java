@@ -346,7 +346,6 @@ public class AdministratorDashboard extends javax.swing.JFrame {
 
     private void frmUserManagementWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmUserManagementWindowOpened
         frmUserManagement.setTitle("User Management");
-        frmUserManagement.pack();
         frmUserManagement.setLocationRelativeTo(null);
         
         cboSelectUser.setVisible(false);
@@ -560,7 +559,7 @@ public class AdministratorDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTopupCreditActionPerformed
 
     private void frmTopupCustCreditWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmTopupCustCreditWindowOpened
-        frmTopupCustCredit.setTitle("User Management");
+        frmTopupCustCredit.setTitle("Topup Customer Credit");
         lblDisplayCustCredit.setAlignmentX(CENTER_ALIGNMENT);
         frmTopupCustCredit.pack();
         frmTopupCustCredit.setLocationRelativeTo(null);
