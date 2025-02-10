@@ -1,13 +1,10 @@
 package food_ordering_system.GUI;
 
 import food_ordering_system.Controller.AdministratorController;
-import food_ordering_system.Model.User;
 import food_ordering_system.Utilities.LoginRedirect;
 import java.awt.Color;
 
 import javax.swing.*;
-import java.awt.event.*;
-import java.io.BufferedReader;
 
 public class AdministratorDashboard extends javax.swing.JFrame {
     private final AdministratorController adminController = new AdministratorController();

@@ -208,51 +208,6 @@ public class AdministratorController {
             } catch (IOException e) {
                 throw new RuntimeException("Error writing notification: " + e.getMessage());
             }
-
-            // Generate and print receipt
-            printReceipt(custID);
         }
     }
-
-    private void printReceipt(String custID) {
-        String notificationFilePath = "src/food_ordering_system/Data/notifications.txt";
-        List<String> fileContents = new ArrayList<>();
-        boolean foundUnread = false;
-        String notificationMessage = null;
-        String notificationID = null;
-
-        // Read notifications.txt and find unread notifications
-        try (BufferedReader br = new BufferedReader(new FileReader(notificationFilePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
-
-                if (parts[1].equals(custID) && parts[4].equals("false")) { // Unread notification
-                    notificationMessage = parts[3]; // Message
-                    notificationID = parts[0]; // Notification ID
-                    parts[4] = "true"; // Mark as read
-                    foundUnread = true;
-                }
-                fileContents.add(String.join(",", parts));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading notifications file: " + e.getMessage());
-        }
-
-        // Show notification popup if unread notifications exist
-        if (foundUnread) {
-            JOptionPane.showMessageDialog(null, notificationMessage, "Transaction Receipt", JOptionPane.INFORMATION_MESSAGE);
-
-            // Update notifications.txt after user acknowledges
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(notificationFilePath))) {
-                for (String line : fileContents) {
-                    bw.write(line);
-                    bw.newLine();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException("Error updating notifications file: " + e.getMessage());
-            }
-        }
-    }
-
 }

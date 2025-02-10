@@ -112,7 +112,6 @@ public class LoadData {
     private String getTaskData() {
         return """
                 Task ID, Order ID, Runner ID, Status, Location, Timestamp
-                
                 TK001, ORD002, R002, Pending, 14/2/2025 12:15
                 TK002, ORD004, R004, Complete, 16/2/2025 13:20
                 """;
