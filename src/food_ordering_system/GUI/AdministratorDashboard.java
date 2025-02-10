@@ -59,8 +59,6 @@ public class AdministratorDashboard extends javax.swing.JFrame {
         lblWelcome = new javax.swing.JLabel();
         btnManageUser = new javax.swing.JButton();
         btnTopupCredit = new javax.swing.JButton();
-        btnGenerateReceipt = new javax.swing.JButton();
-        btnSendReceipt = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
 
         frmUserManagement.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -257,7 +255,7 @@ public class AdministratorDashboard extends javax.swing.JFrame {
 
         java.awt.GridBagLayout pnlAdminLayout = new java.awt.GridBagLayout();
         pnlAdminLayout.columnWidths = new int[] {0, 5, 0};
-        pnlAdminLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0};
+        pnlAdminLayout.rowHeights = new int[] {0, 5, 0, 5, 0};
         pnlAdmin.setLayout(pnlAdminLayout);
 
         lblWelcome.setText("Welcome Admin <admin ID>");
@@ -291,25 +289,6 @@ public class AdministratorDashboard extends javax.swing.JFrame {
         gridBagConstraints.gridy = 2;
         pnlAdmin.add(btnTopupCredit, gridBagConstraints);
 
-        btnGenerateReceipt.setText("Generate Transaction Receipt");
-        btnGenerateReceipt.setPreferredSize(new java.awt.Dimension(200, 30));
-        btnGenerateReceipt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGenerateReceiptActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        pnlAdmin.add(btnGenerateReceipt, gridBagConstraints);
-
-        btnSendReceipt.setText("Send Receipt to Customer");
-        btnSendReceipt.setPreferredSize(new java.awt.Dimension(200, 30));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
-        pnlAdmin.add(btnSendReceipt, gridBagConstraints);
-
         btnLogout.setBackground(new java.awt.Color(255, 0, 0));
         btnLogout.setForeground(new java.awt.Color(255, 255, 255));
         btnLogout.setText("Logout");
@@ -320,7 +299,7 @@ public class AdministratorDashboard extends javax.swing.JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 3;
         pnlAdmin.add(btnLogout, gridBagConstraints);
 
@@ -346,10 +325,6 @@ public class AdministratorDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnGenerateReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateReceiptActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnGenerateReceiptActionPerformed
-
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         int choice = JOptionPane.showConfirmDialog(
                 this,
@@ -365,6 +340,7 @@ public class AdministratorDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void btnManageUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageUserActionPerformed
+        frmUserManagement.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frmUserManagement.setVisible(true);
     }//GEN-LAST:event_btnManageUserActionPerformed
 
@@ -579,6 +555,7 @@ public class AdministratorDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConfirmAddCreditActionPerformed
 
     private void btnTopupCreditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTopupCreditActionPerformed
+        frmTopupCustCredit.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frmTopupCustCredit.setVisible(true);
     }//GEN-LAST:event_btnTopupCreditActionPerformed
 
@@ -671,12 +648,10 @@ public class AdministratorDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnAdd50;
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnConfirmAddCredit;
-    private javax.swing.JButton btnGenerateReceipt;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnManageUser;
     private javax.swing.JButton btnSearchCust;
     private javax.swing.JButton btnSearchUser;
-    private javax.swing.JButton btnSendReceipt;
     private javax.swing.JButton btnTopupCredit;
     private javax.swing.JComboBox<String> cboSelectAction;
     private javax.swing.JComboBox<String> cboSelectUser;
