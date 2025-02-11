@@ -2,12 +2,14 @@ package food_ordering_system.GUI;
 
 import food_ordering_system.Utilities.LoginRedirect;
 import food_ordering_system.Utilities.Notifications;
+import java.awt.Color;
 
 import javax.swing.*;
 
 public class CustomerDashboard extends javax.swing.JFrame {
 
     public CustomerDashboard(String custID) {
+        setTitle("Customer Interface");
         new Notifications().printReceipt(custID);
         initComponents();
         setLocationRelativeTo(null);
@@ -35,13 +37,14 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnReviews = new javax.swing.JButton();
         btnComplaint = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
+        btnLogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(0, 0));
-        setPreferredSize(new java.awt.Dimension(500, 150));
+        setPreferredSize(new java.awt.Dimension(500, 170));
         java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
         layout.columnWidths = new int[] {0, 5, 0, 5, 0};
-        layout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0};
+        layout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0};
         getContentPane().setLayout(layout);
 
         lblWelcome.setText("Welcome <customer name>");
@@ -100,6 +103,14 @@ public class CustomerDashboard extends javax.swing.JFrame {
         gridBagConstraints.gridwidth = 5;
         getContentPane().add(jSeparator1, gridBagConstraints);
 
+        btnLogout.setBackground(Color.RED);
+        btnLogout.setForeground(Color.WHITE);
+        btnLogout.setText("Logout");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 8;
+        getContentPane().add(btnLogout, gridBagConstraints);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -140,6 +151,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnComplaint;
+    private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnManageOrders;
     private javax.swing.JButton btnReadReviews;
     private javax.swing.JButton btnReviews;
