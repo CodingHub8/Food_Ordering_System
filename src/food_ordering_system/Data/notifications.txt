@@ -1,2 +1,2 @@
 Notification ID, Target ID, Title, Message, isViewed
-NOTIF001,C001,Credit Top Up,Successfully Top Up RM10.00 at 11/02/2025 00:49,false
+NOTIF001,C001,Credit Top Up,Successfully Top Up RM10.00 at 11/02/2025 00:49,true
