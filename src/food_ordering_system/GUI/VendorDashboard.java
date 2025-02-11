@@ -14,7 +14,7 @@ public class VendorDashboard extends javax.swing.JFrame {
     private GraphPanel graphPanel;
     private final VendorController vendorController = new VendorController();
 
-    public VendorDashboard() {
+    public VendorDashboard(String vendorID) {
         setTitle("Vendor Dashboard");
         List<Double> revenues = getRevenues(timestamp);
         graphPanel = new GraphPanel(revenues, "Revenue (RM)", timestamp);

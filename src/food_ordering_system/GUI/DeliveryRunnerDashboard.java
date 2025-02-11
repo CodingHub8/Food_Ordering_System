@@ -12,7 +12,7 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
     private String timestamp = "Days";//by default
     private GraphPanel graphPanel;
 
-    public DeliveryRunnerDashboard() {
+    public DeliveryRunnerDashboard(String runnerID) {
         setTitle("Runner Interface");
         initComponents();
 

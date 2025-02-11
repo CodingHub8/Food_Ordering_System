@@ -96,13 +96,13 @@ public class LoginScreen extends javax.swing.JFrame {
             if (userID.startsWith("AD")) { //admin
                 new AdministratorDashboard(userID);
             } else if (userID.startsWith("C")) {//customer
-                new CustomerDashboard();
+                new CustomerDashboard(userID);
             } else if (userID.startsWith("R")) {//runner
-                new DeliveryRunnerDashboard();
+                new DeliveryRunnerDashboard(userID);
             } else if (userID.startsWith("V")) {//vendor
-                new VendorDashboard();
+                new VendorDashboard(userID);
             } else if (userID.startsWith("MAN")) {//manager
-                new ManagerDashboard();
+                new ManagerDashboard(userID);
             }
         } else if (userID.equalsIgnoreCase("Enter your user ID") || password.equalsIgnoreCase("Enter your password")) {
             JOptionPane.showMessageDialog(null, "Please fill in all credentials", "Error", JOptionPane.WARNING_MESSAGE);

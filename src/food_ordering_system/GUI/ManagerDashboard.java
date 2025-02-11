@@ -16,7 +16,7 @@ public class ManagerDashboard extends javax.swing.JFrame {
     private GraphPanel runnerGraphPanel;
     private final ManagerController managerController = new ManagerController();
 
-    public ManagerDashboard() {
+    public ManagerDashboard(String managerID) {
         setTitle("Manager Interface");
         initComponents();
         setLocationRelativeTo(null);

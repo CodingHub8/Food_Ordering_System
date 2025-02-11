@@ -1,12 +1,14 @@
 package food_ordering_system.GUI;
 
 import food_ordering_system.Utilities.LoginRedirect;
+import food_ordering_system.Utilities.Notifications;
 
 import javax.swing.*;
 
 public class CustomerDashboard extends javax.swing.JFrame {
 
-    public CustomerDashboard() {
+    public CustomerDashboard(String custID) {
+        new Notifications().printReceipt(custID);
         initComponents();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
