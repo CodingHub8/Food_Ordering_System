@@ -27,29 +27,78 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        pnlNavigations = new javax.swing.JPanel();
+        lblWelcome = new javax.swing.JLabel();
+        btnViewMenu = new javax.swing.JButton();
+        btnReadReviews = new javax.swing.JButton();
+        btnManageOrders = new javax.swing.JButton();
+        btnTransactionHistory = new javax.swing.JButton();
+        btnReviews = new javax.swing.JButton();
+        btnComplaint = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+        setMinimumSize(new java.awt.Dimension(0, 0));
+        setPreferredSize(new java.awt.Dimension(500, 150));
+        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
+        layout.columnWidths = new int[] {0, 5, 0, 5, 0};
+        layout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0};
+        getContentPane().setLayout(layout);
 
-        javax.swing.GroupLayout pnlNavigationsLayout = new javax.swing.GroupLayout(pnlNavigations);
-        pnlNavigations.setLayout(pnlNavigationsLayout);
-        pnlNavigationsLayout.setHorizontalGroup(
-            pnlNavigationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        pnlNavigationsLayout.setVerticalGroup(
-            pnlNavigationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
-
+        lblWelcome.setText("Welcome <customer name>");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 400;
-        gridBagConstraints.ipady = 300;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        getContentPane().add(pnlNavigations, gridBagConstraints);
+        gridBagConstraints.gridwidth = 5;
+        getContentPane().add(lblWelcome, gridBagConstraints);
+
+        btnViewMenu.setText("View Menu");
+        btnViewMenu.setPreferredSize(new java.awt.Dimension(140, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        getContentPane().add(btnViewMenu, gridBagConstraints);
+
+        btnReadReviews.setText("Customer Reviews");
+        btnReadReviews.setPreferredSize(new java.awt.Dimension(140, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        getContentPane().add(btnReadReviews, gridBagConstraints);
+
+        btnManageOrders.setText("Orders");
+        btnManageOrders.setPreferredSize(new java.awt.Dimension(140, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 4;
+        getContentPane().add(btnManageOrders, gridBagConstraints);
+
+        btnTransactionHistory.setText("Transaction History");
+        btnTransactionHistory.setPreferredSize(new java.awt.Dimension(140, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        getContentPane().add(btnTransactionHistory, gridBagConstraints);
+
+        btnReviews.setText("Provide Reviews");
+        btnReviews.setPreferredSize(new java.awt.Dimension(140, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 6;
+        getContentPane().add(btnReviews, gridBagConstraints);
+
+        btnComplaint.setText("File a complaint");
+        btnComplaint.setPreferredSize(new java.awt.Dimension(140, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 6;
+        getContentPane().add(btnComplaint, gridBagConstraints);
+
+        jSeparator1.setPreferredSize(new java.awt.Dimension(0, 10));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 5;
+        getContentPane().add(jSeparator1, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -90,6 +139,13 @@ public class CustomerDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlNavigations;
+    private javax.swing.JButton btnComplaint;
+    private javax.swing.JButton btnManageOrders;
+    private javax.swing.JButton btnReadReviews;
+    private javax.swing.JButton btnReviews;
+    private javax.swing.JButton btnTransactionHistory;
+    private javax.swing.JButton btnViewMenu;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblWelcome;
     // End of variables declaration//GEN-END:variables
 }
