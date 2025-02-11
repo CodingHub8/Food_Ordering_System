@@ -193,7 +193,7 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DeliveryRunnerDashboard().setVisible(true);
+                new DeliveryRunnerDashboard("").setVisible(true);
             }
         });
     }

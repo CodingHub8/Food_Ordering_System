@@ -84,7 +84,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CustomerDashboard().setVisible(true);
+                new CustomerDashboard("").setVisible(true);
             }
         });
     }
