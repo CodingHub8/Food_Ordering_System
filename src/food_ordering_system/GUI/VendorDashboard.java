@@ -6,6 +6,7 @@ import food_ordering_system.Utilities.LoginRedirect;
 
 import java.awt.*;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class VendorDashboard extends javax.swing.JFrame {
     private String timestamp = "Days";//by default
@@ -50,6 +51,15 @@ public class VendorDashboard extends javax.swing.JFrame {
         frmOrderHistory = new javax.swing.JFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblOrderHistory = new javax.swing.JTable();
+        frmItemManagement = new javax.swing.JFrame();
+        cboSelectAction = new javax.swing.JComboBox<>();
+        pnlSearchBar = new javax.swing.JPanel();
+        txtSearchItemID = new javax.swing.JTextField();
+        btnSearchItem = new javax.swing.JButton();
+        txtItemName = new javax.swing.JTextField();
+        txtItemPrice = new javax.swing.JTextField();
+        txtItemDesc = new javax.swing.JTextField();
+        btnConfirm = new javax.swing.JButton();
         pnlDashboard = new javax.swing.JPanel();
         pnlGraph = new javax.swing.JPanel();
         pnlButton = new javax.swing.JPanel();
@@ -66,8 +76,6 @@ public class VendorDashboard extends javax.swing.JFrame {
         btnOrderHistory = new javax.swing.JButton();
         scrlPnlReviews = new javax.swing.JScrollPane();
         txtReviews = new javax.swing.JTextArea();
-
-        frmOrderHistory.setPreferredSize(new java.awt.Dimension(500, 400));
 
         tblOrderHistory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -95,6 +103,93 @@ public class VendorDashboard extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblOrderHistory);
 
         frmOrderHistory.getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        frmItemManagement.getContentPane().setLayout(new javax.swing.BoxLayout(frmItemManagement.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
+
+        cboSelectAction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select action", "Add Item", "View Item", "Update Item", "Delete Item" }));
+        cboSelectAction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboSelectActionActionPerformed(evt);
+            }
+        });
+        frmItemManagement.getContentPane().add(cboSelectAction);
+
+        pnlSearchBar.setLayout(new javax.swing.BoxLayout(pnlSearchBar, javax.swing.BoxLayout.LINE_AXIS));
+
+        txtSearchItemID.setText("Search Item ID");
+        txtSearchItemID.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtSearchItemIDFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtSearchItemIDFocusLost(evt);
+            }
+        });
+        pnlSearchBar.add(txtSearchItemID);
+
+        btnSearchItem.setIcon(new javax.swing.JLabel() {
+            public javax.swing.Icon getIcon() {
+                try {
+                    return new javax.swing.ImageIcon(
+                        new java.net.URL("https://img.icons8.com/cotton/16/search--v2.png")
+                    );
+                } catch (java.net.MalformedURLException e) {
+                }
+                return null;
+            }
+        }.getIcon());
+        btnSearchItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchItemActionPerformed(evt);
+            }
+        });
+        pnlSearchBar.add(btnSearchItem);
+
+        frmItemManagement.getContentPane().add(pnlSearchBar);
+
+        txtItemName.setText("Name");
+        txtItemName.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtItemNameFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtItemNameFocusLost(evt);
+            }
+        });
+        frmItemManagement.getContentPane().add(txtItemName);
+
+        txtItemPrice.setText("Price (RM)");
+        txtItemPrice.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtItemPriceFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtItemPriceFocusLost(evt);
+            }
+        });
+        frmItemManagement.getContentPane().add(txtItemPrice);
+
+        txtItemDesc.setText("Description");
+        txtItemDesc.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtItemDescFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtItemDescFocusLost(evt);
+            }
+        });
+        frmItemManagement.getContentPane().add(txtItemDesc);
+
+        btnConfirm.setBackground(new java.awt.Color(0, 204, 0));
+        btnConfirm.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirm.setText("Confirm");
+        btnConfirm.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmActionPerformed(evt);
+            }
+        });
+        frmItemManagement.getContentPane().add(btnConfirm);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Vendor");
@@ -275,6 +370,179 @@ public class VendorDashboard extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnOrderHistoryActionPerformed
 
+    private void cboSelectActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSelectActionActionPerformed
+        String action = String.valueOf(cboSelectAction.getSelectedItem());
+
+        pnlSearchBar.setVisible(false);
+
+        txtSearchItemID.setText("Search User ID");
+        txtItemName.setText("Name");
+        txtItemName.setEditable(false);
+        txtItemName.setVisible(false);
+        txtItemName.setFocusable(false);
+        txtItemPrice.setText("Password");
+        txtItemPrice.setEditable(false);
+        txtItemPrice.setVisible(false);
+        txtItemPrice.setFocusable(false);
+
+        btnConfirm.setVisible(false);
+        btnConfirm.setBackground(Color.GREEN);
+        btnConfirm.setForeground(Color.BLACK);
+
+        switch (action){
+            case "Create new user" -> {
+                txtItemName.setVisible(true);
+                txtItemName.setEditable(true);
+                txtItemName.setFocusable(true);
+                txtItemPrice.setVisible(true);
+                txtItemPrice.setEditable(true);
+                txtItemPrice.setFocusable(true);
+                btnConfirm.setVisible(true);
+            }
+
+            case "View user info" -> {
+                pnlSearchBar.setVisible(true);
+                txtItemName.setVisible(true);
+                txtItemPrice.setVisible(true);
+            }
+
+            case "Update user info" -> {
+                pnlSearchBar.setVisible(true);
+                txtItemName.setVisible(true);
+                txtItemName.setEditable(true);
+                txtItemName.setFocusable(true);
+                txtItemPrice.setVisible(true);
+                txtItemPrice.setEditable(true);
+                txtItemPrice.setFocusable(true);
+                btnConfirm.setVisible(true);
+            }
+
+            case "Delete user info" -> {
+                pnlSearchBar.setVisible(true);
+                txtItemName.setVisible(true);
+                txtItemName.setEditable(true);
+                txtItemName.setFocusable(true);
+                txtItemPrice.setVisible(true);
+                txtItemPrice.setEditable(true);
+                txtItemPrice.setFocusable(true);
+
+                btnConfirm.setBackground(Color.RED);
+                btnConfirm.setForeground(Color.WHITE);
+                btnConfirm.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_cboSelectActionActionPerformed
+
+    private void txtSearchItemIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchItemIDFocusGained
+        if(txtSearchItemID.getText().equals("Search User ID")){
+            txtSearchItemID.setText("");
+        }
+    }//GEN-LAST:event_txtSearchItemIDFocusGained
+
+    private void txtSearchItemIDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchItemIDFocusLost
+        if(txtSearchItemID.getText().isEmpty()){
+            txtSearchItemID.setText("Search User ID");
+        }
+    }//GEN-LAST:event_txtSearchItemIDFocusLost
+
+    private void btnSearchItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchItemActionPerformed
+        String itemID = txtSearchItemID.getText();
+        String[] itemData = vendorController.viewItem(itemID);
+
+        if(itemData != null){
+            txtItemName.setText(itemData[1]);
+            txtItemPrice.setText(itemData[2]);
+        } else if (txtSearchItemID.getText().equals("Search Item ID")){
+            JOptionPane.showMessageDialog(null, "Enter item ID to search");
+        } else {
+            JOptionPane.showMessageDialog(null, "Item not found");
+            txtItemName.setText("Name");
+            txtItemPrice.setText("Price (RM)");
+            txtItemDesc.setText("Description");
+        }
+    }//GEN-LAST:event_btnSearchItemActionPerformed
+
+    private void txtItemNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtItemNameFocusGained
+        if(txtItemName.getText().equals("Name")){
+            txtItemName.setText("");
+        }
+    }//GEN-LAST:event_txtItemNameFocusGained
+
+    private void txtItemNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtItemNameFocusLost
+        if(txtItemName.getText().isEmpty()){
+            txtItemName.setText("Name");
+        }
+    }//GEN-LAST:event_txtItemNameFocusLost
+
+    private void txtItemPriceFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtItemPriceFocusGained
+        if(txtItemPrice.getText().equals("Price (RM)")){
+            txtItemPrice.setText("");
+        }
+    }//GEN-LAST:event_txtItemPriceFocusGained
+
+    private void txtItemPriceFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtItemPriceFocusLost
+        if(txtItemPrice.getText().isEmpty()){
+            txtItemPrice.setText("Price (RM)");
+        }
+    }//GEN-LAST:event_txtItemPriceFocusLost
+
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
+        String action = String.valueOf(cboSelectAction.getSelectedItem());
+
+        switch (action){
+            case "Add Item" -> {
+                int confirm = JOptionPane.showConfirmDialog(null, "Add Item", "Confirm creation", JOptionPane.YES_NO_OPTION);
+
+                if(confirm == JOptionPane.YES_OPTION){
+                    vendorController.createItem(vendorID, txtItemName.getText(), txtItemPrice.getText(), txtItemDesc.getText());
+                    JOptionPane.showMessageDialog(null, "New item added");
+                }
+            }
+
+            case "Update Item" -> {
+                if(txtSearchItemID.getText().equals("Search Item ID")){{
+                    JOptionPane.showMessageDialog(null, "Search item ID to update");
+                    return;
+                }}
+
+                int confirm = JOptionPane.showConfirmDialog(null, "Update item info?", "Confirm update", JOptionPane.YES_NO_OPTION);
+
+                if(confirm == JOptionPane.YES_OPTION){
+                    vendorController.updateItem(vendorID, txtSearchItemID.getText(), txtItemName.getText(), txtItemPrice.getText());
+                    JOptionPane.showMessageDialog(null, "Item data updated");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Enter item ID to search");
+                }
+            }
+
+            case "Delete Item" -> {
+                if(txtSearchItemID.getText().equals("Search Item ID")){{
+                    JOptionPane.showMessageDialog(null, "Search item ID to delete");
+                    return;
+                }}
+
+                int confirm = JOptionPane.showConfirmDialog(null, "Delete item?", "Confirm deletion", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+
+                if(confirm == JOptionPane.YES_OPTION){
+                    vendorController.deleteItem(vendorID, txtSearchItemID.getText());
+                    JOptionPane.showMessageDialog(null, "Item data removed");
+                    txtSearchItemID.setText("Search Item ID");
+                    txtItemName.setText("Name");
+                    txtItemPrice.setText("Price (RM)");
+                    txtItemDesc.setText("Description");
+                }
+            }
+        }
+    }//GEN-LAST:event_btnConfirmActionPerformed
+
+    private void txtItemDescFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtItemDescFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtItemDescFocusGained
+
+    private void txtItemDescFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtItemDescFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtItemDescFocusLost
+
     /**
      * @param args the command line arguments
      */
@@ -311,12 +579,16 @@ public class VendorDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnDays;
     private javax.swing.JButton btnManageItems;
     private javax.swing.JButton btnManageOrders;
     private javax.swing.JButton btnMonths;
     private javax.swing.JButton btnOrderHistory;
     private javax.swing.JButton btnQuarters;
+    private javax.swing.JButton btnSearchItem;
+    private javax.swing.JComboBox<String> cboSelectAction;
+    private javax.swing.JFrame frmItemManagement;
     private javax.swing.JFrame frmOrderHistory;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
@@ -327,8 +599,13 @@ public class VendorDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlDashboard;
     private javax.swing.JPanel pnlGraph;
     private javax.swing.JPanel pnlNavigator;
+    private javax.swing.JPanel pnlSearchBar;
     private javax.swing.JScrollPane scrlPnlReviews;
     private javax.swing.JTable tblOrderHistory;
+    private javax.swing.JTextField txtItemDesc;
+    private javax.swing.JTextField txtItemName;
+    private javax.swing.JTextField txtItemPrice;
     private javax.swing.JTextArea txtReviews;
+    private javax.swing.JTextField txtSearchItemID;
     // End of variables declaration//GEN-END:variables
 }

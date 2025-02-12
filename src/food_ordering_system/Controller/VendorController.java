@@ -124,15 +124,15 @@ public class VendorController {
         return key;
     }
 
-    public int createItem(){
+    public int createItem(String vendorID, String itemName, String itemPrice, String itemDesc){
         return 1;
     }
 
-    public int updateItem(){
+    public int updateItem(String vendorID, String itemName, String itemPrice, String itemDesc){
         return 1;
     }
 
-    public int deleteItem(){
+    public int deleteItem(String vendorID, String itemID){
         return 1;
     }
 
@@ -146,6 +146,10 @@ public class VendorController {
 
     public int updateOrderStatus(){
         return 1;
+    }
+
+    public String[] viewItem(String userID) {
+        return null;
     }
 
     static class CustomTableModel extends AbstractTableModel {
