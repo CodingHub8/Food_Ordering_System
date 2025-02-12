@@ -67,29 +67,24 @@ public class IDGenerator {
         return String.format("NOTIF%03d", notificationCount);
     }
 
-    public String generateItemID(String vendorID, String itemsFilePath){
-        String prefix = vendorID;
+    public String generateItemID(String vendorID, String itemsFilePath) {
+        if (itemsFilePath == null || vendorID == null) return null;
 
-        int nextID = 1;  // Default to C001, R001, V001
-        if (itemsFilePath == null) return null;
-
+        int nextID = 1; // Default to V###I001
         try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
-            String lastLine = null, line;
+            String line;
             while ((line = br.readLine()) != null) {
-                lastLine = line;
-            }
-
-            if (lastLine != null) {
-                String[] parts = lastLine.split(",");
-                if (parts[0].startsWith(prefix)) {
-                    int lastNum = Integer.parseInt(parts[0].substring(1)); // Extract number
-                    nextID = lastNum + 1; // Increment
+                String[] parts = line.split(",");
+                if (parts[1].trim().equals(vendorID)) { // Match Vendor ID
+                    String itemID = parts[0].trim(); // Get Item ID
+                    int lastNum = Integer.parseInt(itemID.substring(itemID.indexOf("I") + 1)); // Extract the numeric part
+                    nextID = Math.max(nextID, lastNum + 1); // Update nextID
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading file for ID generation: " + e.getMessage());
         }
 
-        return String.format("%s%03d", prefix, nextID); // Format as C001, R002, etc.
+        return String.format("%sI%03d", vendorID, nextID); // Format as V###I###
     }
 }

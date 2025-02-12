@@ -128,13 +128,44 @@ public class VendorController {
     }
 
     public void createItem(String vendorID, String itemName, String itemPrice, String itemDesc){
-        String itemID = new IDGenerator().generateItemID(vendorID, itemsFilePath);
+        if (vendorID == null) {
+            System.out.println("Invalid file path or vendor ID.");
+            return;
+        }
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(itemsFilePath, true))) {
-            bw.write();
-            bw.newLine();
+        String newItemID = new IDGenerator().generateItemID(vendorID, itemsFilePath); // Generate new Item ID
+
+        // Create a new item line
+        String newItem = String.format("%s, %s, %s, %.2f, %s", newItemID, vendorID, itemName, Double.parseDouble(itemPrice), itemDesc);
+
+        List<String> items = new ArrayList<>();
+        items.add(newItem);
+
+        // Read all existing items
+        try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                items.add(line.trim());
+            }
         } catch (IOException e) {
-            throw new RuntimeException("Error creating user: " + e.getMessage());
+            System.out.println("Error reading items file: " + e.getMessage());
+        }
+
+        // Sort the items by Item ID
+        items.sort((item1, item2) -> {
+            String id1 = item1.split(",")[0].trim();
+            String id2 = item2.split(",")[0].trim();
+            return id1.compareTo(id2);
+        });
+
+        // Write the sorted items back to the file
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(itemsFilePath))) {
+            for (String item : items) {
+                bw.write(item);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing items file: " + e.getMessage());
         }
     }
 
