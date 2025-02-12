@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Notifications {
+    private final String notificationFilePath = "src/food_ordering_system/Data/notifications.txt";
+
     public void printReceipt(String userID) {
-        String notificationFilePath = "src/food_ordering_system/Data/notifications.txt";
         List<String> fileContents = new ArrayList<>();
         boolean foundUnread = false;
         String notificationMessage = null;

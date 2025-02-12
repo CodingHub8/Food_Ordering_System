@@ -3,6 +3,7 @@ package food_ordering_system.GUI;
 import food_ordering_system.Controller.VendorController;
 import food_ordering_system.Utilities.GraphPanel;
 import food_ordering_system.Utilities.LoginRedirect;
+import food_ordering_system.Utilities.Notifications;
 
 import java.awt.*;
 import java.util.List;
@@ -187,14 +188,14 @@ public class VendorDashboard extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Order ID", "Vendor ID", "Item ID(s)", "Amount (RM)", "Status", "Option", "Timestamp"
+                "Order ID", "Customer ID", "Vendor ID", "Item ID(s)", "Amount (RM)", "Status", "Option", "Timestamp"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, false, false
+                false, false, false, false, false, true, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -221,14 +222,14 @@ public class VendorDashboard extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Order ID", "Vendor ID", "Item ID(s)", "Amount (RM)", "Status", "Option", "Timestamp"
+                "Order ID", "Customer ID", "Vendor ID", "Item ID(s)", "Amount (RM)", "Status", "Option", "Timestamp"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -670,8 +671,9 @@ public class VendorDashboard extends javax.swing.JFrame {
         int col = tblOrders.getSelectedColumn();
 
         // Only handle clicks on the "Status" column
-        if (col == 4) { // "Status" is column index 4
+        if (col == 5) { // "Status" is column index 4
             String orderID = tblOrders.getValueAt(row, 0).toString(); // Get Order ID
+            String custID = tblOrders.getValueAt(row, 1).toString();
             String currentStatus = tblOrders.getValueAt(row, col).toString().trim(); // Get current status
 
             if (currentStatus.equals("Pending")) {
@@ -689,6 +691,7 @@ public class VendorDashboard extends javax.swing.JFrame {
                 if (choice == 0) { // Reject
                     vendorController.updateOrderStatusInFile(orderID, "Rejected");
                     tblOrders.setValueAt("Rejected", row, col); // Update table
+                    //new Notifications().orderNotification(orderID, custID);
                 } else if (choice == 1) { // Accept
                     vendorController.updateOrderStatusInFile(orderID, "Preparing");
                     tblOrders.setValueAt("Preparing", row, col); // Update table

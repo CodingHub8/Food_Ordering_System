@@ -1,29 +1,41 @@
 package food_ordering_system.GUI;
 
+import food_ordering_system.Controller.DeliveryRunnerController;
 import food_ordering_system.Utilities.GraphPanel;
 import food_ordering_system.Utilities.LoginRedirect;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 
 public class DeliveryRunnerDashboard extends javax.swing.JFrame {
     private String timestamp = "Days";//by default
     private GraphPanel graphPanel;
+    private final DeliveryRunnerController runnerController = new DeliveryRunnerController();
+    private List<Double> revenues;
+    private String[] runnerDetail;
+    private String runnerID;
 
     public DeliveryRunnerDashboard(String runnerID) {
+        this.runnerID = runnerID;
         setTitle("Runner Interface");
-        initComponents();
+        runnerDetail = runnerController.getRunnerDetails(runnerID);
 
-        List<Double> revenues = new ArrayList<>();
+        revenues = runnerController.getRevenues(runnerID, timestamp);
         graphPanel = new GraphPanel(revenues, "Revenue (RM)", timestamp);
-        pnlGraph.add(graphPanel);
 
+        initComponents();
+        lblRunnerID.setText("ID: " + runnerDetail[0]);
+        lblRunnerName.setText("Name: " + runnerDetail[1]);
+
+        txtReviews.setText("");
+        txtReviews.append(runnerController.getReviews(runnerID));
+
+        pnlGraph.add(graphPanel);
         setLocationRelativeTo(null);
-        setVisible(true);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         new LoginRedirect().logout(this);
+        setVisible(true);
     }
 
     /** This method is called from within the constructor to
@@ -34,7 +46,14 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        frmTaskManagement = new javax.swing.JFrame();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblTasks = new javax.swing.JTable();
+        frmTaskHistory = new javax.swing.JFrame();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblTaskHistory = new javax.swing.JTable();
         pnlDashboard = new javax.swing.JPanel();
         pnlGraph = new javax.swing.JPanel();
         pnlButton = new javax.swing.JPanel();
@@ -46,8 +65,83 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
         lblRunnerName = new javax.swing.JLabel();
         btnManageTasks = new javax.swing.JButton();
         btnTaskHistory = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
         scrlPnlReviews = new javax.swing.JScrollPane();
         txtReviews = new javax.swing.JTextArea();
+
+        frmTaskManagement.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                frmTaskManagementWindowOpened(evt);
+            }
+        });
+
+        tblTasks.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Task ID", "Order ID", "Runner ID", "Status", "Payment (RM)", "Location", "Timestamp"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblTasks.setShowGrid(true);
+        tblTasks.getTableHeader().setReorderingAllowed(false);
+        tblTasks.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblTasksMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tblTasks);
+
+        frmTaskManagement.getContentPane().add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        tblTaskHistory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Task ID", "Order ID", "Runner ID", "Status", "Payment (RM)", "Location", "Timestamp"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblTaskHistory.setShowGrid(true);
+        tblTaskHistory.getTableHeader().setReorderingAllowed(false);
+        tblTaskHistory.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblTaskHistoryMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblTaskHistory);
+
+        frmTaskHistory.getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1200, 400));
@@ -92,18 +186,29 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
 
         pnlNavigator.setBackground(Color.decode("#500073"));
         pnlNavigator.setForeground(new java.awt.Color(255, 255, 255));
-        pnlNavigator.setLayout(new java.awt.GridLayout(4, 0, 0, 5));
+        java.awt.GridBagLayout pnlNavigatorLayout = new java.awt.GridBagLayout();
+        pnlNavigatorLayout.columnWidths = new int[] {0};
+        pnlNavigatorLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0};
+        pnlNavigator.setLayout(pnlNavigatorLayout);
 
+        lblRunnerID.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblRunnerID.setForeground(new java.awt.Color(255, 255, 255));
         lblRunnerID.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblRunnerID.setText("ID: <Runner ID>");
         lblRunnerID.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        pnlNavigator.add(lblRunnerID);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        pnlNavigator.add(lblRunnerID, gridBagConstraints);
 
+        lblRunnerName.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblRunnerName.setForeground(new java.awt.Color(255, 255, 255));
         lblRunnerName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblRunnerName.setText("Name: <Runner Name>");
-        pnlNavigator.add(lblRunnerName);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        pnlNavigator.add(lblRunnerName, gridBagConstraints);
 
         btnManageTasks.setBackground(Color.decode("#F14A00"));
         btnManageTasks.setText("Manage Tasks");
@@ -115,14 +220,29 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
                 btnManageTasksActionPerformed(evt);
             }
         });
-        pnlNavigator.add(btnManageTasks);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        pnlNavigator.add(btnManageTasks, gridBagConstraints);
 
         btnTaskHistory.setBackground(Color.decode("#F14A00"));
         btnTaskHistory.setText("Check Task History");
         btnTaskHistory.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnTaskHistory.setMinimumSize(new java.awt.Dimension(140, 25));
         btnTaskHistory.setPreferredSize(new java.awt.Dimension(140, 50));
-        pnlNavigator.add(btnTaskHistory);
+        btnTaskHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaskHistoryActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        pnlNavigator.add(btnTaskHistory, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        pnlNavigator.add(jSeparator1, gridBagConstraints);
 
         getContentPane().add(pnlNavigator);
 
@@ -160,8 +280,82 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMonthsActionPerformed
 
     private void btnManageTasksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageTasksActionPerformed
-        // TODO add your handling code here:
+        tblTasks.setModel(runnerController.loadData(runnerID, "Pending", "Delivering"));
+        frmTaskManagement.setVisible(true);
+        frmTaskManagement.setTitle("Manage Tasks");
+        frmTaskManagement.setSize(new Dimension(600, 220));
+        frmTaskManagement.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnManageTasksActionPerformed
+
+    private void tblTasksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTasksMouseClicked
+        // Add listener for cell edits
+        int row = tblTasks.getSelectedRow();
+        int col = tblTasks.getSelectedColumn();
+
+        // Only handle clicks on the "Status" column
+        if (col == 3) { // "Status" is column index 3
+            String taskID = tblTasks.getValueAt(row, 0).toString(); // Get Task ID
+            String custID = tblTasks.getValueAt(row, 1).toString();
+            String currentStatus = tblTasks.getValueAt(row, col).toString().trim(); // Get current status
+
+            if (currentStatus.equals("Pending")) {
+                int choice = JOptionPane.showOptionDialog(
+                    this,
+                    "Update task status:",
+                    "Task Status",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    new Object[]{"Reject", "Accept"},
+                    "Reject"
+                );
+
+                if (choice == 0) { // Reject
+                    runnerController.updateTaskStatusInFile(taskID, "Rejected");
+                    tblTasks.setValueAt("Rejected", row, col); // Update table
+                    //new Notifications().taskNotification(taskID, custID);
+                } else if (choice == 1) { // Accept
+                    runnerController.updateTaskStatusInFile(taskID, "Delivering");
+                    tblTasks.setValueAt("Delivering", row, col); // Update table
+                }
+            } else if (currentStatus.equals("Delivering")) {
+                int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Mark task as delivered?",
+                    "Task Status",
+                    JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    runnerController.updateTaskStatusInFile(taskID, "Complete");
+                    tblTasks.setValueAt("Complete", row, col); // Update table
+                }
+            }
+            refreshTasksTable();
+        }
+    }//GEN-LAST:event_tblTasksMouseClicked
+
+    private void refreshTasksTable() {
+        tblTasks.setModel(runnerController.loadData(runnerID, "Pending", "Delivering"));
+        tblTasks.revalidate();
+        tblTasks.repaint();
+    }
+    
+    private void frmTaskManagementWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmTaskManagementWindowOpened
+        
+    }//GEN-LAST:event_frmTaskManagementWindowOpened
+
+    private void tblTaskHistoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTaskHistoryMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblTaskHistoryMouseClicked
+
+    private void btnTaskHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaskHistoryActionPerformed
+        tblTaskHistory.setModel(runnerController.loadData(runnerID, "Complete"));
+        frmTaskHistory.setVisible(true);
+        frmTaskHistory.setTitle("Task History");
+        frmTaskHistory.setSize(new Dimension(600, 220));
+        frmTaskHistory.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnTaskHistoryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -204,6 +398,11 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnMonths;
     private javax.swing.JButton btnTaskHistory;
     private javax.swing.JButton btnWeeks;
+    private javax.swing.JFrame frmTaskHistory;
+    private javax.swing.JFrame frmTaskManagement;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblRunnerID;
     private javax.swing.JLabel lblRunnerName;
     private javax.swing.JPanel pnlButton;
@@ -211,6 +410,8 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlGraph;
     private javax.swing.JPanel pnlNavigator;
     private javax.swing.JScrollPane scrlPnlReviews;
+    private javax.swing.JTable tblTaskHistory;
+    private javax.swing.JTable tblTasks;
     private javax.swing.JTextArea txtReviews;
     // End of variables declaration//GEN-END:variables
 

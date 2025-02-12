@@ -32,7 +32,7 @@ public class VendorController {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error reading reviews file: " + e.getMessage());
+            throw new RuntimeException("Error reading ile: " + e.getMessage());
         }
 
         return vendor;
@@ -58,7 +58,7 @@ public class VendorController {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error reading reviews file: " + e.getMessage());
+            throw new RuntimeException("Error reading file: " + e.getMessage());
         }
         return reviews;
     }
@@ -74,21 +74,21 @@ public class VendorController {
             br.readLine();// skip header
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                String orderTimestamp = parts[6].trim(); // Extract timestamp
-                double orderAmount = Double.parseDouble(parts[3]); // Extract total amount
+                String orderTimestamp = parts[7].trim(); // Extract timestamp
+                double orderAmount = Double.parseDouble(parts[4]); // Extract total amount
 
                 // Parse date from timestamp
                 String key = getString(timestamp, orderTimestamp);
 
                 // Add revenue to the respective key
-                if(parts[1].trim().equals(vendorID)){
+                if(parts[2].trim().equals(vendorID)){
                     revenueMap.put(key, revenueMap.getOrDefault(key, 0.0) + orderAmount);
                 }
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new RuntimeException("Error reading or parsing orders file: " + e.getMessage());
+            throw new RuntimeException("Error reading or parsing file: " + e.getMessage());
         }
 
         // Add revenues from map to list in the correct order
@@ -226,21 +226,9 @@ public class VendorController {
                     bw.newLine();
                 }
             } catch (IOException e) {
-                throw new RuntimeException("Error saving updated user data: " + e.getMessage());
+                throw new RuntimeException("Error saving updated data: " + e.getMessage());
             }
         }
-    }
-
-    public int acceptOrder(){
-        return 1;
-    }
-
-    public int cancelOrder(){
-        return 1;
-    }
-
-    public int updateOrderStatus(){
-        return 1;
     }
 
     public String[] viewItem(String vendorID, String itemID) {
@@ -306,7 +294,7 @@ public class VendorController {
     public TableModel loadData(String vendorID, String... status) {
         List<String[]> data = readOrderData(vendorID, status);
 
-        String header = "Order ID, Vendor ID, itemID(s), Total Amount (RM), Status, Option, Timestamp";
+        String header = "Order ID, Customer ID, Vendor ID, itemID(s), Total Amount (RM), Status, Option, Timestamp";
         String[] columnNames = header.split(",");
 
         for(int i = 0; i < columnNames.length; i++){
@@ -324,13 +312,13 @@ public class VendorController {
             while ((line = br.readLine()) != null) {
                 String[] row = line.split(",");
 
-                if(row[1].trim().equals(vendorID)) {
+                if(row[2].trim().equals(vendorID)) {
                     if(status.length > 1){
-                        if(row[4].trim().equals(status[0]) || row[4].trim().equals(status[1])){
+                        if(row[5].trim().equals(status[0]) || row[5].trim().equals(status[1])){
                             data.add(row);
                         }
                     } else {
-                        if(row[4].trim().equals(status[0])){
+                        if(row[5].trim().equals(status[0])){
                             data.add(row);
                         }
                     }
@@ -351,7 +339,7 @@ public class VendorController {
                 String[] parts = line.split(",");
 
                 if (parts[0].trim().equals(orderID)) {
-                    parts[4] = newStatus; // Update status
+                    parts[5] = newStatus; // Update status
                     line = String.join(",", parts);
                 }
                 fileContents.add(line);
