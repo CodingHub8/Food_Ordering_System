@@ -691,10 +691,11 @@ public class VendorDashboard extends javax.swing.JFrame {
                 if (choice == 0) { // Reject
                     vendorController.updateOrderStatusInFile(orderID, "Rejected");
                     tblOrders.setValueAt("Rejected", row, col); // Update table
-                    //new Notifications().orderNotification(orderID, custID);
+                    new Notifications().orderNotification(orderID, custID, "Rejected");
                 } else if (choice == 1) { // Accept
                     vendorController.updateOrderStatusInFile(orderID, "Preparing");
                     tblOrders.setValueAt("Preparing", row, col); // Update table
+                    new Notifications().orderNotification(orderID, custID, "Preparing");
                 }
             } else if (currentStatus.equals("Preparing")) {
                 int confirm = JOptionPane.showConfirmDialog(
@@ -707,6 +708,7 @@ public class VendorDashboard extends javax.swing.JFrame {
                 if (confirm == JOptionPane.YES_OPTION) {
                     vendorController.updateOrderStatusInFile(orderID, "Complete");
                     tblOrders.setValueAt("Complete", row, col); // Update table
+                    new Notifications().orderNotification(orderID, custID, "Complete");
                 }
             }
             refreshOrdersTable();

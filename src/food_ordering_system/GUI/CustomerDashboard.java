@@ -1,18 +1,21 @@
 package food_ordering_system.GUI;
 
+import food_ordering_system.Controller.CustomerController;
 import food_ordering_system.Utilities.*;
-import java.awt.Color;
+
+import java.awt.*;
 
 import javax.swing.*;
 
 public class CustomerDashboard extends javax.swing.JFrame {
+    private CustomerController customerController = new CustomerController();
 
     public CustomerDashboard(String custID) {
         setTitle("Customer Interface");
         new Notifications().printReceipt(custID);
         initComponents();
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         new LoginRedirect().logout(this);
         setVisible(true);
         pack();
@@ -28,6 +31,16 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        frmViewMenu = new javax.swing.JFrame();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblViewMenu = new javax.swing.JTable();
+        frmReadReviews = new javax.swing.JFrame();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtCustomerReviews = new javax.swing.JTextArea();
+        frmOrderItem = new javax.swing.JFrame();
+        frmTransactionHistory = new javax.swing.JFrame();
+        frmProvideReview = new javax.swing.JFrame();
+        frmProvideComplaint = new javax.swing.JFrame();
         pnlCustomer = new javax.swing.JPanel();
         lblWelcome = new javax.swing.JLabel();
         btnViewMenu = new javax.swing.JButton();
@@ -38,6 +51,40 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnComplaint = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         btnLogout = new javax.swing.JButton();
+
+        tblViewMenu.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Item ID", "Vendor ID", "Name", "Price", "Description"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblViewMenu);
+
+        frmViewMenu.getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        txtCustomerReviews.setEditable(false);
+        txtCustomerReviews.setColumns(20);
+        txtCustomerReviews.setRows(5);
+        jScrollPane2.setViewportView(txtCustomerReviews);
+
+        frmReadReviews.getContentPane().add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new ColorPalette().primaryColor);
@@ -60,6 +107,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnViewMenu.setBackground(new ColorPalette().secondaryColor);
         btnViewMenu.setText("View Menu");
         btnViewMenu.setPreferredSize(new java.awt.Dimension(140, 30));
+        btnViewMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewMenuActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -68,6 +120,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnReadReviews.setBackground(new ColorPalette().secondaryColor);
         btnReadReviews.setText("Customer Reviews");
         btnReadReviews.setPreferredSize(new java.awt.Dimension(140, 30));
+        btnReadReviews.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReadReviewsActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
@@ -144,6 +201,24 @@ public class CustomerDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
 
+    private void btnViewMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewMenuActionPerformed
+        tblViewMenu.setModel(customerController.loadMenuData());
+
+        frmViewMenu.setVisible(true);
+        frmViewMenu.setTitle("Menu List");
+        frmViewMenu.pack();
+        frmViewMenu.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnViewMenuActionPerformed
+
+    private void btnReadReviewsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadReviewsActionPerformed
+        txtCustomerReviews.setText(customerController.getReviews());
+        
+        frmReadReviews.setVisible(true);
+        frmReadReviews.setTitle("Customer Reviews");
+        frmReadReviews.setSize(new Dimension(400, 200));
+        frmReadReviews.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnReadReviewsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -187,8 +262,18 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnReviews;
     private javax.swing.JButton btnTransactionHistory;
     private javax.swing.JButton btnViewMenu;
+    private javax.swing.JFrame frmOrderItem;
+    private javax.swing.JFrame frmProvideComplaint;
+    private javax.swing.JFrame frmProvideReview;
+    private javax.swing.JFrame frmReadReviews;
+    private javax.swing.JFrame frmTransactionHistory;
+    private javax.swing.JFrame frmViewMenu;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JPanel pnlCustomer;
+    private javax.swing.JTable tblViewMenu;
+    private javax.swing.JTextArea txtCustomerReviews;
     // End of variables declaration//GEN-END:variables
 }

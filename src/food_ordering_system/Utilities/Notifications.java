@@ -47,4 +47,12 @@ public class Notifications {
             }
         }
     }
+
+    public void orderNotification(String orderID, String custID, String status) {
+
+    }
+
+    public void taskNotification(String orderID, String custID, String status) {
+
+    }
 }

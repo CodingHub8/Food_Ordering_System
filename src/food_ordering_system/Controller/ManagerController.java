@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.regex.*;
 
 public class ManagerController {
-    private final String revenueFilePath = "src/food_ordering_system/Data/orders.txt";
+    private final String ordersFilePath = "src/food_ordering_system/Data/orders.txt";
     private final String ratingFilePath = "src/food_ordering_system/Data/reviews.txt";
     private final String complaintFilePath= "src/food_ordering_system/Data/complaints.txt";
     private final String itemFilePath = "src/food_ordering_system/Data/menu_items.txt";
@@ -20,36 +20,64 @@ public class ManagerController {
     private List<String[]> complaintData = new ArrayList<>();
 
     public List<Double> getVendorRevenues(String timestamp, String vendorID) {
-        List<Double> revenues = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(revenueFilePath))) {
+        // Data structure to store revenues by days, months, or quarters
+        Map<String, Double> revenueMap = new LinkedHashMap<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(ordersFilePath))) {
             String line;
-            br.readLine();  // Skip the header line
-
-            SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
+            br.readLine();// skip header
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                String orderVendorID = parts[1].trim();  // Vendor ID from orders.txt file
-                String orderTimestamp = parts[6].trim();  // Timestamp from orders.txt file
+                String orderTimestamp = parts[7].trim(); // Extract timestamp
+                double orderAmount = Double.parseDouble(parts[4]); // Extract total amount
 
-                // Parse and format timestamp based on selected grouping
-                String formattedTimestamp = switch (timestamp) {
-                    case "Days" -> dayFormat.format(inputFormat.parse(orderTimestamp));
-                    case "Weeks" -> weekFormat.format(inputFormat.parse(orderTimestamp));
-                    case "Months" -> monthFormat.format(inputFormat.parse(orderTimestamp));
-                    default -> "";
-                };
+                // Parse date from timestamp
+                String key = getString(timestamp, orderTimestamp);
 
-                // Add revenue only if the Vendor ID matches
-                if (orderVendorID.equals(vendorID)) {
-                    double totalAmount = Double.parseDouble(parts[3].trim());
-                    revenues.add(totalAmount);
+                // Add revenue to the respective key
+                if(parts[2].trim().equals(vendorID)){
+                    revenueMap.put(key, revenueMap.getOrDefault(key, 0.0) + orderAmount);
                 }
             }
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading or parsing file: " + e.getMessage());
         }
-        return revenues;
+
+        // Add revenues from map to list in the correct order
+        return new ArrayList<>(revenueMap.values());
+    }
+
+    private static String getString(String timestamp, String orderTimestamp) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Date date = sdf.parse(orderTimestamp);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        String key;
+        switch (timestamp) {
+            case "Days" -> {
+                // Group revenues by specific day (dd/MM/yyyy)
+                SimpleDateFormat dayFormat = new SimpleDateFormat("dd/MM/yyyy");
+                key = dayFormat.format(date);
+            }
+            case "Months" -> {
+                // Group revenues by month (MM/yyyy)
+                SimpleDateFormat monthFormat = new SimpleDateFormat("MM/yyyy");
+                key = monthFormat.format(date);
+            }
+            case "Quarters" -> {
+                // Group revenues by quarter (Q/yyyy)
+                int month = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH is 0-based
+                int quarter = (month - 1) / 3 + 1; // Calculate quarter
+                int year = calendar.get(Calendar.YEAR);
+                key = "Q" + quarter + "/" + year;
+            }
+            default -> throw new IllegalArgumentException("Invalid timestamp type: " + timestamp);
+        }
+        return key;
     }
 
     public List<Double> getRunnerRatings(String runnerID) {
@@ -60,8 +88,8 @@ public class ManagerController {
 
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                String targetId = parts[2].trim();  // Target ID (Runner ID) from reviews.txt file
-                double rating = Double.parseDouble(parts[3].trim());  // Rating from reviews.txt file
+                String targetId = parts[3].trim();  // Target ID (Runner ID) from reviews.txt file
+                double rating = Double.parseDouble(parts[4].trim());  // Rating from reviews.txt file
 
                 // Only add ratings for the specific runner ID provided
                 if (targetId.equals(runnerID)) {

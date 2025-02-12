@@ -3,6 +3,7 @@ package food_ordering_system.GUI;
 import food_ordering_system.Controller.DeliveryRunnerController;
 import food_ordering_system.Utilities.GraphPanel;
 import food_ordering_system.Utilities.LoginRedirect;
+import food_ordering_system.Utilities.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
@@ -313,10 +314,11 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
                 if (choice == 0) { // Reject
                     runnerController.updateTaskStatusInFile(taskID, "Rejected");
                     tblTasks.setValueAt("Rejected", row, col); // Update table
-                    //new Notifications().taskNotification(taskID, custID);
+                    new Notifications().taskNotification(taskID, custID, "Rejected");
                 } else if (choice == 1) { // Accept
                     runnerController.updateTaskStatusInFile(taskID, "Delivering");
                     tblTasks.setValueAt("Delivering", row, col); // Update table
+                    new Notifications().taskNotification(taskID, custID, "Delivering");
                 }
             } else if (currentStatus.equals("Delivering")) {
                 int confirm = JOptionPane.showConfirmDialog(
@@ -329,6 +331,7 @@ public class DeliveryRunnerDashboard extends javax.swing.JFrame {
                 if (confirm == JOptionPane.YES_OPTION) {
                     runnerController.updateTaskStatusInFile(taskID, "Complete");
                     tblTasks.setValueAt("Complete", row, col); // Update table
+                    new Notifications().taskNotification(taskID, custID, "Complete");
                 }
             }
             refreshTasksTable();

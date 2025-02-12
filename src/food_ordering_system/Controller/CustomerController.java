@@ -1,5 +1,6 @@
 package food_ordering_system.Controller;
 
+import javax.swing.table.TableModel;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,73 @@ public class CustomerController {
     private final String reviewsFilePath = "src/food_ordering_system/Data/reviews.txt";
     private final String vendorsFilePath = "src/food_ordering_system/Data/vendors.txt";
     private final String runnersFilePath = "src/food_ordering_system/Data/delivery_runners.txt";
+    private final String menuItemsFilePath = "src/food_ordering_system/Data/menu_items.txt";
+
+    public String getReviews(){
+        String reviews = "";
+        try (BufferedReader br = new BufferedReader(new FileReader(reviewsFilePath));) {
+            String line;
+            br.readLine();// skip header
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(",");
+                //e.g C001 - ORD001: Food is good (V001 was given 4.5 rating)
+                reviews += row[2].trim() + " - " + row[1].trim() + ": " + row[5].trim() + " (" + row[3].trim() + " was given " + row[4].trim() + ")\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return reviews.trim();
+    }
+
+    private List<String[]> readMenuDataFromFile(){
+        List<String[]> data = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(menuItemsFilePath))) {
+            String line;
+            br.readLine();// skip header
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(",");
+                data.add(row);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+    public TableModel loadMenuData() {
+        List<String[]> data = readMenuDataFromFile();
+
+        String header = "Item ID, Vendor ID, Name, Price (RM), Description";
+        String[] columnNames = header.split(",");
+
+        for(int i = 0; i < columnNames.length; i++){
+            columnNames[i] = columnNames[i].trim();
+        }
+
+        return new VendorController.CustomTableModel(data, columnNames);
+    }
+
+    public String[] viewItems(){
+        String[] itemData = new String[5];
+
+        try (BufferedReader br = new BufferedReader(new FileReader(menuItemsFilePath))) {
+            String line;
+            br.readLine();  // Skip the header line
+
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+
+                itemData[0] = parts[0].trim();//item ID
+                itemData[1] = parts[1].trim();//vendor ID
+                itemData[2] = parts[2].trim();//name
+                itemData[3] = parts[3].trim();//price
+                itemData[4] = parts[4].trim();//description
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return itemData;//not found
+    }
 
     public void addRating(String targetID) {
         List<Double> ratings = new ArrayList<>();

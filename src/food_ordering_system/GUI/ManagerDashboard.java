@@ -21,7 +21,7 @@ public class ManagerDashboard extends javax.swing.JFrame {
         initComponents();
         lblManagerTitle.setText("Welcome " + managerID);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         new LoginRedirect().logout(this);
         pack();
         setVisible(true);
@@ -45,8 +45,8 @@ public class ManagerDashboard extends javax.swing.JFrame {
         pnlVendorRevenue = new javax.swing.JPanel();
         pnlButton = new javax.swing.JPanel();
         btnDays = new javax.swing.JButton();
-        btnWeeks = new javax.swing.JButton();
         btnMonths = new javax.swing.JButton();
+        btnQuarters = new javax.swing.JButton();
         pnlMonitorRunner = new javax.swing.JPanel();
         pnlSearchRunner = new javax.swing.JPanel();
         txtSearchRunner = new javax.swing.JTextField();
@@ -138,14 +138,6 @@ public class ManagerDashboard extends javax.swing.JFrame {
         });
         pnlButton.add(btnDays);
 
-        btnWeeks.setText("Weeks");
-        btnWeeks.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnWeeksActionPerformed(evt);
-            }
-        });
-        pnlButton.add(btnWeeks);
-
         btnMonths.setText("Months");
         btnMonths.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -153,6 +145,14 @@ public class ManagerDashboard extends javax.swing.JFrame {
             }
         });
         pnlButton.add(btnMonths);
+
+        btnQuarters.setText("Quarters");
+        btnQuarters.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQuartersActionPerformed(evt);
+            }
+        });
+        pnlButton.add(btnQuarters);
 
         pnlVendorRevenue.add(pnlButton, java.awt.BorderLayout.PAGE_END);
 
@@ -378,13 +378,13 @@ public class ManagerDashboard extends javax.swing.JFrame {
         updateVendorGraph("Days");
     }//GEN-LAST:event_btnDaysActionPerformed
 
-    private void btnWeeksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWeeksActionPerformed
-        updateVendorGraph("Weeks");
-    }//GEN-LAST:event_btnWeeksActionPerformed
-
     private void btnMonthsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMonthsActionPerformed
         updateVendorGraph("Months");
     }//GEN-LAST:event_btnMonthsActionPerformed
+
+    private void btnQuartersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuartersActionPerformed
+        updateVendorGraph("Quarters");
+    }//GEN-LAST:event_btnQuartersActionPerformed
 
     private void txtSearchVendorFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchVendorFocusGained
         if(txtSearchVendor.getText().equals("Enter Vendor ID")){
@@ -486,10 +486,10 @@ public class ManagerDashboard extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDays;
     private javax.swing.JButton btnMonths;
+    private javax.swing.JButton btnQuarters;
     private javax.swing.JButton btnRemoveVendorListings;
     private javax.swing.JButton btnSearchRunner;
     private javax.swing.JButton btnSearchVendor;
-    private javax.swing.JButton btnWeeks;
     private javax.swing.JLabel lblManagerTitle;
     private javax.swing.JPanel pnlButton;
     private javax.swing.JPanel pnlMonitorRunner;
