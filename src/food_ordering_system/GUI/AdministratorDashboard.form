@@ -5,6 +5,9 @@
     <Container class="javax.swing.JFrame" name="frmUserManagement">
       <Properties>
         <Property name="defaultCloseOperation" type="int" value="2"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[600, 200]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="windowOpened" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="frmUserManagementWindowOpened"/>
@@ -100,6 +103,7 @@
               <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Confirm"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConfirmActionPerformed"/>

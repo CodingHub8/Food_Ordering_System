@@ -59,6 +59,7 @@ public class AdministratorDashboard extends javax.swing.JFrame {
         btnLogout = new javax.swing.JButton();
 
         frmUserManagement.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        frmUserManagement.setPreferredSize(new java.awt.Dimension(600, 200));
         frmUserManagement.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 frmUserManagementWindowOpened(evt);
@@ -135,6 +136,7 @@ public class AdministratorDashboard extends javax.swing.JFrame {
         btnConfirm.setBackground(new java.awt.Color(0, 204, 0));
         btnConfirm.setForeground(new java.awt.Color(0, 0, 0));
         btnConfirm.setText("Confirm");
+        btnConfirm.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnConfirm.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnConfirmActionPerformed(evt);
@@ -343,13 +345,16 @@ public class AdministratorDashboard extends javax.swing.JFrame {
 
     private void frmUserManagementWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmUserManagementWindowOpened
         frmUserManagement.setTitle("User Management");
-        frmUserManagement.setLocationRelativeTo(null);
-        
+
         cboSelectUser.setVisible(false);
         pnlSearchBar.setVisible(false);
         txtUserName.setVisible(false);
         txtUserPassword.setVisible(false);
         btnConfirm.setVisible(false);
+        btnConfirm.setAlignmentX(CENTER_ALIGNMENT);
+
+        frmUserManagement.pack();
+        frmUserManagement.setLocationRelativeTo(null);
     }//GEN-LAST:event_frmUserManagementWindowOpened
 
     private void cboSelectActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSelectActionActionPerformed
@@ -512,15 +517,27 @@ public class AdministratorDashboard extends javax.swing.JFrame {
             }
 
             case "Update user info" -> {
+                if(txtSearchUserID.getText().equals("Search User ID")){{
+                    JOptionPane.showMessageDialog(null, "Search user ID to update");
+                    return;
+                }}
+
                 int confirm = JOptionPane.showConfirmDialog(null, "Update user info?", "Confirm update", JOptionPane.YES_NO_OPTION);
 
                 if(confirm == JOptionPane.YES_OPTION){
                     adminController.updateUser(txtSearchUserID.getText(), txtUserName.getText(), txtUserPassword.getText());
                     JOptionPane.showMessageDialog(null, "User data updated");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Enter user ID to search");
                 }
             }
 
             case "Delete user info" -> {
+                if(txtSearchUserID.getText().equals("Search User ID")){{
+                    JOptionPane.showMessageDialog(null, "Search user ID to delete");
+                    return;
+                }}
+
                 int confirm = JOptionPane.showConfirmDialog(null, "Delete user?", "Confirm deletion", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
 
                 if(confirm == JOptionPane.YES_OPTION){

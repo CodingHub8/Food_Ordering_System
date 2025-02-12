@@ -4,49 +4,37 @@ import food_ordering_system.Controller.VendorController;
 import food_ordering_system.Utilities.GraphPanel;
 import food_ordering_system.Utilities.LoginRedirect;
 
-import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 
 public class VendorDashboard extends javax.swing.JFrame {
     private String timestamp = "Days";//by default
     private GraphPanel graphPanel;
     private final VendorController vendorController = new VendorController();
+    private List<Double> revenues;
+    private String[] vendorDetail;
+    private String vendorID;
 
     public VendorDashboard(String vendorID) {
+        this.vendorID = vendorID;
         setTitle("Vendor Dashboard");
-        List<Double> revenues = getRevenues(timestamp);
+        vendorDetail = vendorController.getVendorDetails(vendorID);
+
+        revenues = vendorController.getRevenues(vendorID, timestamp);
         graphPanel = new GraphPanel(revenues, "Revenue (RM)", timestamp);
 
         initComponents();
+        lblVendorID.setText("ID: " + vendorID);
+        lblVendorName.setText("Name: " + vendorDetail[1]);
+        lblVendorRating.setText("Rating: " + vendorDetail[3]);
+        txtReviews.setText("");
+        txtReviews.append(vendorController.getReviews(vendorID));
+
         pnlGraph.add(graphPanel);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         new LoginRedirect().logout(this);
         setVisible(true);
-    }
-
-    private List<Double> getRevenues(String timestamp){
-        List<Double> revenues = new ArrayList<>();
-        //will fetch data from orders.txt
-
-        switch (timestamp){
-            case "Days" -> {
-                //
-            }
-            case "Months" -> {
-                //
-            }
-            case "Quarters" -> {
-                //
-            }
-        }
-        revenues.add(5.0);
-        revenues.add(1.0);
-        revenues.add(5.0);
-        revenues.add(1.0);
-        return revenues;
     }
 
     /**
@@ -57,21 +45,56 @@ public class VendorDashboard extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        frmOrderHistory = new javax.swing.JFrame();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblOrderHistory = new javax.swing.JTable();
         pnlDashboard = new javax.swing.JPanel();
         pnlGraph = new javax.swing.JPanel();
         pnlButton = new javax.swing.JPanel();
         btnDays = new javax.swing.JButton();
-        btnWeeks = new javax.swing.JButton();
         btnMonths = new javax.swing.JButton();
+        btnQuarters = new javax.swing.JButton();
         pnlNavigator = new javax.swing.JPanel();
         lblVendorID = new javax.swing.JLabel();
         lblVendorName = new javax.swing.JLabel();
+        lblVendorRating = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
         btnManageItems = new javax.swing.JButton();
         btnManageOrders = new javax.swing.JButton();
         btnOrderHistory = new javax.swing.JButton();
         scrlPnlReviews = new javax.swing.JScrollPane();
         txtReviews = new javax.swing.JTextArea();
+
+        frmOrderHistory.setPreferredSize(new java.awt.Dimension(500, 400));
+
+        tblOrderHistory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Order ID", "Vendor ID", "Item ID(s)", "Amount (RM)", "Status", "Option", "Timestamp"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblOrderHistory);
+
+        frmOrderHistory.getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Vendor");
@@ -98,14 +121,6 @@ public class VendorDashboard extends javax.swing.JFrame {
         });
         pnlButton.add(btnDays);
 
-        btnWeeks.setText("Weeks");
-        btnWeeks.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnWeeksActionPerformed(evt);
-            }
-        });
-        pnlButton.add(btnWeeks);
-
         btnMonths.setText("Months");
         btnMonths.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,6 +129,14 @@ public class VendorDashboard extends javax.swing.JFrame {
         });
         pnlButton.add(btnMonths);
 
+        btnQuarters.setText("Quarters");
+        btnQuarters.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQuartersActionPerformed(evt);
+            }
+        });
+        pnlButton.add(btnQuarters);
+
         pnlDashboard.add(pnlButton, java.awt.BorderLayout.PAGE_END);
 
         getContentPane().add(pnlDashboard);
@@ -121,18 +144,41 @@ public class VendorDashboard extends javax.swing.JFrame {
         pnlNavigator.setBackground(Color.decode("#500073"));
         pnlNavigator.setForeground(new java.awt.Color(255, 255, 255));
         pnlNavigator.setNextFocusableComponent(btnManageItems);
-        pnlNavigator.setLayout(new java.awt.GridLayout(5, 0, 0, 5));
+        java.awt.GridBagLayout pnlNavigatorLayout = new java.awt.GridBagLayout();
+        pnlNavigatorLayout.columnWidths = new int[] {0};
+        pnlNavigatorLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
+        pnlNavigator.setLayout(pnlNavigatorLayout);
 
+        lblVendorID.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblVendorID.setForeground(new java.awt.Color(255, 255, 255));
         lblVendorID.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblVendorID.setText("ID: <Vendor ID>");
         lblVendorID.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        pnlNavigator.add(lblVendorID);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        pnlNavigator.add(lblVendorID, gridBagConstraints);
 
+        lblVendorName.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblVendorName.setForeground(new java.awt.Color(255, 255, 255));
         lblVendorName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblVendorName.setText("Name: <Vendor Name>");
-        pnlNavigator.add(lblVendorName);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        pnlNavigator.add(lblVendorName, gridBagConstraints);
+
+        lblVendorRating.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblVendorRating.setForeground(new java.awt.Color(255, 255, 255));
+        lblVendorRating.setText("Overall Rating: <rating>");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        pnlNavigator.add(lblVendorRating, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        pnlNavigator.add(jSeparator1, gridBagConstraints);
 
         btnManageItems.setBackground(Color.decode("#F14A00"));
         btnManageItems.setText("Manage Items");
@@ -144,7 +190,10 @@ public class VendorDashboard extends javax.swing.JFrame {
                 btnManageItemsActionPerformed(evt);
             }
         });
-        pnlNavigator.add(btnManageItems);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        pnlNavigator.add(btnManageItems, gridBagConstraints);
 
         btnManageOrders.setBackground(Color.decode("#F14A00"));
         btnManageOrders.setText("Manage Orders");
@@ -152,14 +201,25 @@ public class VendorDashboard extends javax.swing.JFrame {
         btnManageOrders.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageOrders.setMinimumSize(new java.awt.Dimension(140, 25));
         btnManageOrders.setPreferredSize(new java.awt.Dimension(140, 50));
-        pnlNavigator.add(btnManageOrders);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        pnlNavigator.add(btnManageOrders, gridBagConstraints);
 
         btnOrderHistory.setBackground(Color.decode("#F14A00"));
         btnOrderHistory.setText("Check Order History");
         btnOrderHistory.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnOrderHistory.setMinimumSize(new java.awt.Dimension(140, 25));
         btnOrderHistory.setPreferredSize(new java.awt.Dimension(140, 50));
-        pnlNavigator.add(btnOrderHistory);
+        btnOrderHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOrderHistoryActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 12;
+        pnlNavigator.add(btnOrderHistory, gridBagConstraints);
 
         getContentPane().add(pnlNavigator);
 
@@ -183,22 +243,37 @@ public class VendorDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnManageItemsActionPerformed
 
     private void btnDaysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDaysActionPerformed
-        graphPanel.setxAxisLabel("Days");
+        timestamp = "Days";
+        revenues = vendorController.getRevenues(vendorID, timestamp);
+        graphPanel.setData(revenues, "Days");
         graphPanel.invalidate();
         graphPanel.repaint();
     }//GEN-LAST:event_btnDaysActionPerformed
 
-    private void btnWeeksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWeeksActionPerformed
-        graphPanel.setxAxisLabel("Weeks");
-        graphPanel.invalidate();
-        graphPanel.repaint();
-    }//GEN-LAST:event_btnWeeksActionPerformed
-
     private void btnMonthsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMonthsActionPerformed
-        graphPanel.setxAxisLabel("Months");
+        timestamp = "Months";
+        revenues = vendorController.getRevenues(vendorID, timestamp);
+        graphPanel.setData(revenues, "Months");
         graphPanel.invalidate();
         graphPanel.repaint();
     }//GEN-LAST:event_btnMonthsActionPerformed
+
+    private void btnQuartersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuartersActionPerformed
+        timestamp = "Quarters";
+        revenues = vendorController.getRevenues(vendorID, timestamp);
+        graphPanel.setData(revenues, "Quarters");
+        graphPanel.invalidate();
+        graphPanel.repaint();
+    }//GEN-LAST:event_btnQuartersActionPerformed
+
+    private void btnOrderHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderHistoryActionPerformed
+        tblOrderHistory.setModel(vendorController.loadData(vendorID));
+        frmOrderHistory.setVisible(true);
+        frmOrderHistory.setTitle("Order History");
+        frmOrderHistory.pack();
+        frmOrderHistory.setLocationRelativeTo(null);
+
+    }//GEN-LAST:event_btnOrderHistoryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -241,14 +316,19 @@ public class VendorDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnManageOrders;
     private javax.swing.JButton btnMonths;
     private javax.swing.JButton btnOrderHistory;
-    private javax.swing.JButton btnWeeks;
+    private javax.swing.JButton btnQuarters;
+    private javax.swing.JFrame frmOrderHistory;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblVendorID;
     private javax.swing.JLabel lblVendorName;
+    private javax.swing.JLabel lblVendorRating;
     private javax.swing.JPanel pnlButton;
     private javax.swing.JPanel pnlDashboard;
     private javax.swing.JPanel pnlGraph;
     private javax.swing.JPanel pnlNavigator;
     private javax.swing.JScrollPane scrlPnlReviews;
+    private javax.swing.JTable tblOrderHistory;
     private javax.swing.JTextArea txtReviews;
     // End of variables declaration//GEN-END:variables
 }

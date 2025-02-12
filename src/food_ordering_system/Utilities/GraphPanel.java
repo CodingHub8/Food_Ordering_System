@@ -147,9 +147,9 @@ public class GraphPanel extends JPanel {
         return maxValue;
     }
 
-    public void setData(List<Double> newValues, String newLabel) {
+    public void setData(List<Double> newValues, String xAxisLabel) {
         this.values = newValues;
-        this.xAxisLabel = newLabel;
+        this.xAxisLabel = xAxisLabel;
         repaint();
     }
 

@@ -19,6 +19,7 @@ public class ManagerDashboard extends javax.swing.JFrame {
     public ManagerDashboard(String managerID) {
         setTitle("Manager Interface");
         initComponents();
+        lblManagerTitle.setText("Welcome " + managerID);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         new LoginRedirect().logout(this);
