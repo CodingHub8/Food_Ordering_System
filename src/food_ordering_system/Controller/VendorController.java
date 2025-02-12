@@ -1,5 +1,7 @@
 package food_ordering_system.Controller;
 
+import food_ordering_system.Utilities.IDGenerator;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
@@ -11,6 +13,7 @@ public class VendorController {
     private final String reviewsFilePath = "src/food_ordering_system/Data/reviews.txt";
     private final String vendorsFilePath = "src/food_ordering_system/Data/vendors.txt";
     private final String ordersFilePath = "src/food_ordering_system/Data/orders.txt";
+    private final String itemsFilePath = "src/food_ordering_system/Data/menu_items.txt";
 
     public String[] getVendorDetails(String vendorID){
         String[] vendor = new String[4];
@@ -124,16 +127,78 @@ public class VendorController {
         return key;
     }
 
-    public int createItem(String vendorID, String itemName, String itemPrice, String itemDesc){
-        return 1;
+    public void createItem(String vendorID, String itemName, String itemPrice, String itemDesc){
+        String itemID = new IDGenerator().generateItemID(vendorID, itemsFilePath);
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(itemsFilePath, true))) {
+            bw.write();
+            bw.newLine();
+        } catch (IOException e) {
+            throw new RuntimeException("Error creating user: " + e.getMessage());
+        }
     }
 
-    public int updateItem(String vendorID, String itemName, String itemPrice, String itemDesc){
-        return 1;
+    public void updateItem(String vendorID, String itemID, String newItemName, String newItemPrice, String newItemDesc){
+        List<String> fileContents = new ArrayList<>();
+        boolean updated = false;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+
+                if (parts[0].trim().equals(itemID) && parts[1].trim().equals(vendorID)) {
+                    parts[2] = newItemName;
+                    parts[3] = newItemPrice;
+                    parts[4] = newItemDesc;
+                    line = String.join(",", parts);
+                    updated = true;
+                }
+                fileContents.add(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error updating item: " + e.getMessage());
+        }
+
+        if (updated) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(itemsFilePath))) {
+                for (String line : fileContents) {
+                    bw.write(line);
+                    bw.newLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Error saving updated item data: " + e.getMessage());
+            }
+        }
     }
 
-    public int deleteItem(String vendorID, String itemID){
-        return 1;
+    public void deleteItem(String vendorID, String itemID){
+        List<String> fileContents = new ArrayList<>();
+        boolean found = false;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.startsWith(itemID)) {
+                    fileContents.add(line);
+                } else {
+                    found = true;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error deleting user: " + e.getMessage());
+        }
+
+        if (found) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(itemsFilePath))) {
+                for (String line : fileContents) {
+                    bw.write(line);
+                    bw.newLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Error saving updated user data: " + e.getMessage());
+            }
+        }
     }
 
     public int acceptOrder(){
@@ -148,8 +213,29 @@ public class VendorController {
         return 1;
     }
 
-    public String[] viewItem(String userID) {
-        return null;
+    public String[] viewItem(String vendorID, String itemID) {
+        String[] itemData = new String[5];
+
+        try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
+            String line;
+            br.readLine();  // Skip the header line
+
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+
+                if(parts[0].trim().startsWith(vendorID) && parts[0].trim().equals(itemID) && parts[1].trim().equals(vendorID)) {//found
+                    itemData[0] = parts[0].trim();//item ID
+                    itemData[1] = parts[1].trim();//vendor ID
+                    itemData[2] = parts[2].trim();//name
+                    itemData[3] = parts[3].trim();//price
+                    itemData[4] = parts[4].trim();//description
+                    return itemData;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;//not found
     }
 
     static class CustomTableModel extends AbstractTableModel {

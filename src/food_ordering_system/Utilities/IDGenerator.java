@@ -66,4 +66,30 @@ public class IDGenerator {
 
         return String.format("NOTIF%03d", notificationCount);
     }
+
+    public String generateItemID(String vendorID, String itemsFilePath){
+        String prefix = vendorID;
+
+        int nextID = 1;  // Default to C001, R001, V001
+        if (itemsFilePath == null) return null;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
+            String lastLine = null, line;
+            while ((line = br.readLine()) != null) {
+                lastLine = line;
+            }
+
+            if (lastLine != null) {
+                String[] parts = lastLine.split(",");
+                if (parts[0].startsWith(prefix)) {
+                    int lastNum = Integer.parseInt(parts[0].substring(1)); // Extract number
+                    nextID = lastNum + 1; // Increment
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file for ID generation: " + e.getMessage());
+        }
+
+        return String.format("%s%03d", prefix, nextID); // Format as C001, R002, etc.
+    }
 }

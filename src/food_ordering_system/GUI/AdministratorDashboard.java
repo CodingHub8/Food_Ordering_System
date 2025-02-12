@@ -59,7 +59,7 @@ public class AdministratorDashboard extends javax.swing.JFrame {
         btnLogout = new javax.swing.JButton();
 
         frmUserManagement.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        frmUserManagement.setPreferredSize(new java.awt.Dimension(600, 200));
+        frmUserManagement.setPreferredSize(new java.awt.Dimension(600, 220));
         frmUserManagement.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 frmUserManagementWindowOpened(evt);
@@ -409,10 +409,10 @@ public class AdministratorDashboard extends javax.swing.JFrame {
             case "Delete user info" -> {
                 pnlSearchBar.setVisible(true);
                 txtUserName.setVisible(true);
-                txtUserName.setEditable(true);
+                txtUserName.setEditable(false);
                 txtUserName.setFocusable(true);
                 txtUserPassword.setVisible(true);
-                txtUserPassword.setEditable(true);
+                txtUserPassword.setEditable(false);
                 txtUserPassword.setFocusable(true);
                 
                 btnConfirm.setBackground(Color.RED);

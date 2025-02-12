@@ -77,6 +77,9 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JFrame" name="frmItemManagement">
+      <Events>
+        <EventHandler event="windowOpened" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="frmItemManagementWindowOpened"/>
+      </Events>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
         <Property name="axis" type="int" value="1"/>

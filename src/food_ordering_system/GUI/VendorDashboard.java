@@ -104,6 +104,11 @@ public class VendorDashboard extends javax.swing.JFrame {
 
         frmOrderHistory.getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
+        frmItemManagement.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                frmItemManagementWindowOpened(evt);
+            }
+        });
         frmItemManagement.getContentPane().setLayout(new javax.swing.BoxLayout(frmItemManagement.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         cboSelectAction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select action", "Add Item", "View Item", "Update Item", "Delete Item" }));
@@ -334,7 +339,13 @@ public class VendorDashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnManageItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageItemsActionPerformed
-        // TODO add your handling code here:
+        frmItemManagement.setVisible(true);
+        frmItemManagement.setTitle("Manage Items");
+
+        initializeItemManagement();
+
+        frmItemManagement.setSize(new Dimension(600, 220));
+        frmItemManagement.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnManageItemsActionPerformed
 
     private void btnDaysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDaysActionPerformed
@@ -361,52 +372,63 @@ public class VendorDashboard extends javax.swing.JFrame {
         graphPanel.repaint();
     }//GEN-LAST:event_btnQuartersActionPerformed
 
+    private void initializeItemManagement(){
+        pnlSearchBar.setVisible(false);
+        txtSearchItemID.setText("Search Item ID");
+
+        txtItemName.setText("Name");
+        txtItemName.setEditable(false);
+        txtItemName.setVisible(false);
+        txtItemName.setFocusable(false);
+        txtItemPrice.setText("Price (RM)");
+        txtItemPrice.setEditable(false);
+        txtItemPrice.setVisible(false);
+        txtItemPrice.setFocusable(false);
+        txtItemDesc.setText("Description");
+        txtItemDesc.setEditable(false);
+        txtItemDesc.setVisible(false);
+        txtItemDesc.setFocusable(false);
+
+        btnConfirm.setVisible(false);
+        btnConfirm.setAlignmentX(CENTER_ALIGNMENT);
+        btnConfirm.setBackground(Color.GREEN);
+        btnConfirm.setForeground(Color.BLACK);
+    }
+
     private void btnOrderHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderHistoryActionPerformed
         tblOrderHistory.setModel(vendorController.loadData(vendorID));
         frmOrderHistory.setVisible(true);
         frmOrderHistory.setTitle("Order History");
         frmOrderHistory.pack();
         frmOrderHistory.setLocationRelativeTo(null);
-
     }//GEN-LAST:event_btnOrderHistoryActionPerformed
 
     private void cboSelectActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSelectActionActionPerformed
         String action = String.valueOf(cboSelectAction.getSelectedItem());
-
-        pnlSearchBar.setVisible(false);
-
-        txtSearchItemID.setText("Search User ID");
-        txtItemName.setText("Name");
-        txtItemName.setEditable(false);
-        txtItemName.setVisible(false);
-        txtItemName.setFocusable(false);
-        txtItemPrice.setText("Password");
-        txtItemPrice.setEditable(false);
-        txtItemPrice.setVisible(false);
-        txtItemPrice.setFocusable(false);
-
-        btnConfirm.setVisible(false);
-        btnConfirm.setBackground(Color.GREEN);
-        btnConfirm.setForeground(Color.BLACK);
+        initializeItemManagement();
 
         switch (action){
-            case "Create new user" -> {
+            case "Add Item" -> {
                 txtItemName.setVisible(true);
                 txtItemName.setEditable(true);
                 txtItemName.setFocusable(true);
                 txtItemPrice.setVisible(true);
                 txtItemPrice.setEditable(true);
                 txtItemPrice.setFocusable(true);
+                txtItemDesc.setEditable(true);
+                txtItemDesc.setVisible(true);
+                txtItemDesc.setFocusable(true);
                 btnConfirm.setVisible(true);
             }
 
-            case "View user info" -> {
+            case "View Item" -> {
                 pnlSearchBar.setVisible(true);
                 txtItemName.setVisible(true);
                 txtItemPrice.setVisible(true);
+                txtItemDesc.setVisible(true);
             }
 
-            case "Update user info" -> {
+            case "Update Item" -> {
                 pnlSearchBar.setVisible(true);
                 txtItemName.setVisible(true);
                 txtItemName.setEditable(true);
@@ -414,17 +436,23 @@ public class VendorDashboard extends javax.swing.JFrame {
                 txtItemPrice.setVisible(true);
                 txtItemPrice.setEditable(true);
                 txtItemPrice.setFocusable(true);
+                txtItemDesc.setEditable(true);
+                txtItemDesc.setVisible(true);
+                txtItemDesc.setFocusable(true);
                 btnConfirm.setVisible(true);
             }
 
-            case "Delete user info" -> {
+            case "Delete Item" -> {
                 pnlSearchBar.setVisible(true);
                 txtItemName.setVisible(true);
-                txtItemName.setEditable(true);
-                txtItemName.setFocusable(true);
+                txtItemName.setFocusable(false);
+                txtItemName.setEditable(false);
                 txtItemPrice.setVisible(true);
-                txtItemPrice.setEditable(true);
-                txtItemPrice.setFocusable(true);
+                txtItemPrice.setFocusable(false);
+                txtItemPrice.setEditable(false);
+                txtItemDesc.setVisible(true);
+                txtItemDesc.setFocusable(false);
+                txtItemDesc.setEditable(false);
 
                 btnConfirm.setBackground(Color.RED);
                 btnConfirm.setForeground(Color.WHITE);
@@ -434,24 +462,24 @@ public class VendorDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_cboSelectActionActionPerformed
 
     private void txtSearchItemIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchItemIDFocusGained
-        if(txtSearchItemID.getText().equals("Search User ID")){
+        if(txtSearchItemID.getText().equals("Search Item ID")){
             txtSearchItemID.setText("");
         }
     }//GEN-LAST:event_txtSearchItemIDFocusGained
 
     private void txtSearchItemIDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchItemIDFocusLost
         if(txtSearchItemID.getText().isEmpty()){
-            txtSearchItemID.setText("Search User ID");
+            txtSearchItemID.setText("Search Item ID");
         }
     }//GEN-LAST:event_txtSearchItemIDFocusLost
 
     private void btnSearchItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchItemActionPerformed
-        String itemID = txtSearchItemID.getText();
-        String[] itemData = vendorController.viewItem(itemID);
+        String[] itemData = vendorController.viewItem(vendorID, txtSearchItemID.getText());
 
         if(itemData != null){
-            txtItemName.setText(itemData[1]);
-            txtItemPrice.setText(itemData[2]);
+            txtItemName.setText(itemData[2]);
+            txtItemPrice.setText(itemData[3]);
+            txtItemDesc.setText(itemData[4]);
         } else if (txtSearchItemID.getText().equals("Search Item ID")){
             JOptionPane.showMessageDialog(null, "Enter item ID to search");
         } else {
@@ -491,6 +519,12 @@ public class VendorDashboard extends javax.swing.JFrame {
 
         switch (action){
             case "Add Item" -> {
+                if(txtItemName.getText().equals("Name") && !txtItemPrice.getText().chars().allMatch(Character::isDigit) &&
+                        txtItemDesc.getText().equals("Description")){
+                    JOptionPane.showMessageDialog(null, "Enter item details to add");
+                    return;
+                }
+                
                 int confirm = JOptionPane.showConfirmDialog(null, "Add Item", "Confirm creation", JOptionPane.YES_NO_OPTION);
 
                 if(confirm == JOptionPane.YES_OPTION){
@@ -500,7 +534,8 @@ public class VendorDashboard extends javax.swing.JFrame {
             }
 
             case "Update Item" -> {
-                if(txtSearchItemID.getText().equals("Search Item ID")){{
+                if(txtSearchItemID.getText().equals("Search Item ID") && txtItemName.getText().equals("Name") &&
+                        !txtItemPrice.getText().chars().allMatch(Character::isDigit) && txtItemDesc.getText().equals("Description")){{
                     JOptionPane.showMessageDialog(null, "Search item ID to update");
                     return;
                 }}
@@ -508,7 +543,7 @@ public class VendorDashboard extends javax.swing.JFrame {
                 int confirm = JOptionPane.showConfirmDialog(null, "Update item info?", "Confirm update", JOptionPane.YES_NO_OPTION);
 
                 if(confirm == JOptionPane.YES_OPTION){
-                    vendorController.updateItem(vendorID, txtSearchItemID.getText(), txtItemName.getText(), txtItemPrice.getText());
+                    vendorController.updateItem(vendorID, txtSearchItemID.getText(), txtItemName.getText(), txtItemPrice.getText(), txtItemDesc.getText());
                     JOptionPane.showMessageDialog(null, "Item data updated");
                 } else {
                     JOptionPane.showMessageDialog(null, "Enter item ID to search");
@@ -516,7 +551,8 @@ public class VendorDashboard extends javax.swing.JFrame {
             }
 
             case "Delete Item" -> {
-                if(txtSearchItemID.getText().equals("Search Item ID")){{
+                if(txtSearchItemID.getText().equals("Search Item ID") && txtItemName.getText().equals("Name") &&
+                        !txtItemPrice.getText().chars().allMatch(Character::isDigit) && txtItemDesc.getText().equals("Description")){{
                     JOptionPane.showMessageDialog(null, "Search item ID to delete");
                     return;
                 }}
@@ -536,12 +572,26 @@ public class VendorDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConfirmActionPerformed
 
     private void txtItemDescFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtItemDescFocusGained
-        // TODO add your handling code here:
+        if(txtItemDesc.getText().equals("Description")){
+            txtItemDesc.setText("");
+        }
     }//GEN-LAST:event_txtItemDescFocusGained
 
     private void txtItemDescFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtItemDescFocusLost
-        // TODO add your handling code here:
+        if(txtItemDesc.getText().isEmpty()){
+            txtItemDesc.setText("Description");
+        }
     }//GEN-LAST:event_txtItemDescFocusLost
+
+    private void frmItemManagementWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmItemManagementWindowOpened
+        frmItemManagement.setVisible(true);
+        frmItemManagement.setTitle("Manage Items");
+
+        initializeItemManagement();
+
+        frmItemManagement.setSize(new Dimension(600, 220));
+        frmItemManagement.setLocationRelativeTo(null);
+    }//GEN-LAST:event_frmItemManagementWindowOpened
 
     /**
      * @param args the command line arguments
