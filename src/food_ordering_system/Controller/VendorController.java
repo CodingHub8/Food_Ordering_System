@@ -2,7 +2,6 @@ package food_ordering_system.Controller;
 
 import food_ordering_system.Utilities.IDGenerator;
 
-import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.io.*;
@@ -279,6 +278,11 @@ public class VendorController {
         }
 
         @Override
+        public boolean isCellEditable(int row, int column) {
+            return true;
+        }
+
+        @Override
         public int getRowCount() {
             return data.size();
         }
@@ -299,10 +303,12 @@ public class VendorController {
         }
     }
 
-    public TableModel loadData(String vendorID) {
-        List<String[]> data = readDataFromFile(vendorID);
+    public TableModel loadData(String vendorID, String... status) {
+        List<String[]> data = readOrderData(vendorID, status);
+
         String header = "Order ID, Vendor ID, itemID(s), Total Amount (RM), Status, Option, Timestamp";
         String[] columnNames = header.split(",");
+
         for(int i = 0; i < columnNames.length; i++){
             columnNames[i] = columnNames[i].trim();
         }
@@ -310,7 +316,7 @@ public class VendorController {
         return new CustomTableModel(data, columnNames);
     }
 
-    private List<String[]> readDataFromFile(String vendorID) {
+    private List<String[]> readOrderData(String vendorID, String... status) {
         List<String[]> data = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(ordersFilePath))) {
             String line;
@@ -318,13 +324,49 @@ public class VendorController {
             while ((line = br.readLine()) != null) {
                 String[] row = line.split(",");
 
-                if(row[1].trim().equals(vendorID)){
-                    data.add(row);
+                if(row[1].trim().equals(vendorID)) {
+                    if(status.length > 1){
+                        if(row[4].trim().equals(status[0]) || row[4].trim().equals(status[1])){
+                            data.add(row);
+                        }
+                    } else {
+                        if(row[4].trim().equals(status[0])){
+                            data.add(row);
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return data;
+    }
+
+    public void updateOrderStatusInFile(String orderID, String newStatus) {
+        List<String> fileContents = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(ordersFilePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+
+                if (parts[0].trim().equals(orderID)) {
+                    parts[4] = newStatus; // Update status
+                    line = String.join(",", parts);
+                }
+                fileContents.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(ordersFilePath))) {
+            for (String contentLine : fileContents) {
+                bw.write(contentLine);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

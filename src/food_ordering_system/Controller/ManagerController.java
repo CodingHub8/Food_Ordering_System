@@ -190,7 +190,7 @@ public class ManagerController {
 
         if (itemRemoved) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(itemFilePath))) {
-                bw.write("Item ID, Vendor ID, Name, Price, Description\n");
+                bw.write("Item ID, Vendor ID, Name, Price (RM), Description\n");
                 for (String updatedLine : lines) {
                     bw.write(updatedLine);
                     bw.newLine();

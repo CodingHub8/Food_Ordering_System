@@ -1,7 +1,6 @@
 package food_ordering_system.GUI;
 
-import food_ordering_system.Utilities.LoginRedirect;
-import food_ordering_system.Utilities.Notifications;
+import food_ordering_system.Utilities.*;
 import java.awt.Color;
 
 import javax.swing.*;
@@ -29,6 +28,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        pnlCustomer = new javax.swing.JPanel();
         lblWelcome = new javax.swing.JLabel();
         btnViewMenu = new javax.swing.JButton();
         btnReadReviews = new javax.swing.JButton();
@@ -40,67 +40,77 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnLogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new ColorPalette().primaryColor);
         setPreferredSize(new java.awt.Dimension(500, 170));
-        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
-        layout.columnWidths = new int[] {0, 5, 0, 5, 0};
-        layout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0};
-        getContentPane().setLayout(layout);
 
+        pnlCustomer.setBackground(new ColorPalette().primaryColor);
+        java.awt.GridBagLayout pnlCustomerLayout = new java.awt.GridBagLayout();
+        pnlCustomerLayout.columnWidths = new int[] {0, 5, 0, 5, 0};
+        pnlCustomerLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0};
+        pnlCustomer.setLayout(pnlCustomerLayout);
+
+        lblWelcome.setForeground(new java.awt.Color(255, 255, 255));
         lblWelcome.setText("Welcome <customer name>");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 5;
-        getContentPane().add(lblWelcome, gridBagConstraints);
+        pnlCustomer.add(lblWelcome, gridBagConstraints);
 
+        btnViewMenu.setBackground(new ColorPalette().secondaryColor);
         btnViewMenu.setText("View Menu");
         btnViewMenu.setPreferredSize(new java.awt.Dimension(140, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        getContentPane().add(btnViewMenu, gridBagConstraints);
+        pnlCustomer.add(btnViewMenu, gridBagConstraints);
 
+        btnReadReviews.setBackground(new ColorPalette().secondaryColor);
         btnReadReviews.setText("Customer Reviews");
         btnReadReviews.setPreferredSize(new java.awt.Dimension(140, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
-        getContentPane().add(btnReadReviews, gridBagConstraints);
+        pnlCustomer.add(btnReadReviews, gridBagConstraints);
 
+        btnManageOrders.setBackground(new ColorPalette().secondaryColor);
         btnManageOrders.setText("Orders");
         btnManageOrders.setPreferredSize(new java.awt.Dimension(140, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 4;
-        getContentPane().add(btnManageOrders, gridBagConstraints);
+        pnlCustomer.add(btnManageOrders, gridBagConstraints);
 
+        btnTransactionHistory.setBackground(new ColorPalette().secondaryColor);
         btnTransactionHistory.setText("Transaction History");
         btnTransactionHistory.setPreferredSize(new java.awt.Dimension(140, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
-        getContentPane().add(btnTransactionHistory, gridBagConstraints);
+        pnlCustomer.add(btnTransactionHistory, gridBagConstraints);
 
+        btnReviews.setBackground(new ColorPalette().secondaryColor);
         btnReviews.setText("Provide Reviews");
         btnReviews.setPreferredSize(new java.awt.Dimension(140, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 6;
-        getContentPane().add(btnReviews, gridBagConstraints);
+        pnlCustomer.add(btnReviews, gridBagConstraints);
 
+        btnComplaint.setBackground(new ColorPalette().secondaryColor);
         btnComplaint.setText("File a complaint");
         btnComplaint.setPreferredSize(new java.awt.Dimension(140, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 6;
-        getContentPane().add(btnComplaint, gridBagConstraints);
+        pnlCustomer.add(btnComplaint, gridBagConstraints);
 
         jSeparator1.setPreferredSize(new java.awt.Dimension(0, 10));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 5;
-        getContentPane().add(jSeparator1, gridBagConstraints);
+        pnlCustomer.add(jSeparator1, gridBagConstraints);
 
         btnLogout.setBackground(Color.RED);
         btnLogout.setForeground(Color.WHITE);
@@ -113,7 +123,9 @@ public class CustomerDashboard extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 8;
-        getContentPane().add(btnLogout, gridBagConstraints);
+        pnlCustomer.add(btnLogout, gridBagConstraints);
+
+        getContentPane().add(pnlCustomer, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -177,5 +189,6 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnViewMenu;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblWelcome;
+    private javax.swing.JPanel pnlCustomer;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,7 +6,11 @@ import food_ordering_system.Utilities.LoginRedirect;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Vector;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 public class VendorDashboard extends javax.swing.JFrame {
     private String timestamp = "Days";//by default
@@ -48,9 +52,6 @@ public class VendorDashboard extends javax.swing.JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        frmOrderHistory = new javax.swing.JFrame();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblOrderHistory = new javax.swing.JTable();
         frmItemManagement = new javax.swing.JFrame();
         cboSelectAction = new javax.swing.JComboBox<>();
         pnlSearchBar = new javax.swing.JPanel();
@@ -60,6 +61,12 @@ public class VendorDashboard extends javax.swing.JFrame {
         txtItemPrice = new javax.swing.JTextField();
         txtItemDesc = new javax.swing.JTextField();
         btnConfirm = new javax.swing.JButton();
+        frmOrderManagement = new javax.swing.JFrame();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblOrders = new javax.swing.JTable();
+        frmOrderHistory = new javax.swing.JFrame();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblOrderHistory = new javax.swing.JTable();
         pnlDashboard = new javax.swing.JPanel();
         pnlGraph = new javax.swing.JPanel();
         pnlButton = new javax.swing.JPanel();
@@ -76,33 +83,6 @@ public class VendorDashboard extends javax.swing.JFrame {
         btnOrderHistory = new javax.swing.JButton();
         scrlPnlReviews = new javax.swing.JScrollPane();
         txtReviews = new javax.swing.JTextArea();
-
-        tblOrderHistory.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Order ID", "Vendor ID", "Item ID(s)", "Amount (RM)", "Status", "Option", "Timestamp"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(tblOrderHistory);
-
-        frmOrderHistory.getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         frmItemManagement.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -195,6 +175,74 @@ public class VendorDashboard extends javax.swing.JFrame {
             }
         });
         frmItemManagement.getContentPane().add(btnConfirm);
+
+        frmOrderManagement.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                frmOrderManagementWindowOpened(evt);
+            }
+        });
+
+        tblOrders.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Order ID", "Vendor ID", "Item ID(s)", "Amount (RM)", "Status", "Option", "Timestamp"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblOrders.setShowGrid(true);
+        tblOrders.getTableHeader().setReorderingAllowed(false);
+        tblOrders.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblOrdersMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tblOrders);
+
+        frmOrderManagement.getContentPane().add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        tblOrderHistory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Order ID", "Vendor ID", "Item ID(s)", "Amount (RM)", "Status", "Option", "Timestamp"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblOrderHistory.setShowGrid(true);
+        jScrollPane1.setViewportView(tblOrderHistory);
+
+        frmOrderHistory.getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Vendor");
@@ -301,6 +349,11 @@ public class VendorDashboard extends javax.swing.JFrame {
         btnManageOrders.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnManageOrders.setMinimumSize(new java.awt.Dimension(140, 25));
         btnManageOrders.setPreferredSize(new java.awt.Dimension(140, 50));
+        btnManageOrders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManageOrdersActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 10;
@@ -396,7 +449,8 @@ public class VendorDashboard extends javax.swing.JFrame {
     }
 
     private void btnOrderHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderHistoryActionPerformed
-        tblOrderHistory.setModel(vendorController.loadData(vendorID));
+        tblOrderHistory.setModel(vendorController.loadData(vendorID, "Complete"));
+
         frmOrderHistory.setVisible(true);
         frmOrderHistory.setTitle("Order History");
         frmOrderHistory.pack();
@@ -593,6 +647,75 @@ public class VendorDashboard extends javax.swing.JFrame {
         frmItemManagement.setLocationRelativeTo(null);
     }//GEN-LAST:event_frmItemManagementWindowOpened
 
+    private void openManageOrderFrame(){
+        tblOrders.setModel(vendorController.loadData(vendorID, "Pending", "Preparing"));
+
+        frmOrderManagement.setVisible(true);
+        frmOrderManagement.setTitle("Order Management");
+        frmOrderManagement.pack();
+        frmOrderManagement.setLocationRelativeTo(null);
+    }
+    
+    private void btnManageOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageOrdersActionPerformed
+        openManageOrderFrame();
+    }//GEN-LAST:event_btnManageOrdersActionPerformed
+
+    private void frmOrderManagementWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmOrderManagementWindowOpened
+        openManageOrderFrame();
+    }//GEN-LAST:event_frmOrderManagementWindowOpened
+
+    private void tblOrdersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblOrdersMouseClicked
+        // Add listener for cell edits
+        int row = tblOrders.getSelectedRow();
+        int col = tblOrders.getSelectedColumn();
+
+        // Only handle clicks on the "Status" column
+        if (col == 4) { // "Status" is column index 4
+            String orderID = tblOrders.getValueAt(row, 0).toString(); // Get Order ID
+            String currentStatus = tblOrders.getValueAt(row, col).toString().trim(); // Get current status
+
+            if (currentStatus.equals("Pending")) {
+                int choice = JOptionPane.showOptionDialog(
+                        this,
+                        "Update order status:",
+                        "Order Status",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        new Object[]{"Reject", "Accept"},
+                        "Reject"
+                );
+
+                if (choice == 0) { // Reject
+                    vendorController.updateOrderStatusInFile(orderID, "Rejected");
+                    tblOrders.setValueAt("Rejected", row, col); // Update table
+                } else if (choice == 1) { // Accept
+                    vendorController.updateOrderStatusInFile(orderID, "Preparing");
+                    tblOrders.setValueAt("Preparing", row, col); // Update table
+                }
+            } else if (currentStatus.equals("Preparing")) {
+                int confirm = JOptionPane.showConfirmDialog(
+                        this,
+                        "Mark order as complete?",
+                        "Order Status",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    vendorController.updateOrderStatusInFile(orderID, "Complete");
+                    tblOrders.setValueAt("Complete", row, col); // Update table
+                }
+            }
+            refreshOrdersTable();
+        }
+    }//GEN-LAST:event_tblOrdersMouseClicked
+
+    private void refreshOrdersTable() {
+        tblOrders.setModel(vendorController.loadData(vendorID, "Pending", "Preparing"));
+        tblOrders.revalidate();
+        tblOrders.repaint();
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -640,7 +763,9 @@ public class VendorDashboard extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cboSelectAction;
     private javax.swing.JFrame frmItemManagement;
     private javax.swing.JFrame frmOrderHistory;
+    private javax.swing.JFrame frmOrderManagement;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblVendorID;
     private javax.swing.JLabel lblVendorName;
@@ -652,6 +777,7 @@ public class VendorDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlSearchBar;
     private javax.swing.JScrollPane scrlPnlReviews;
     private javax.swing.JTable tblOrderHistory;
+    private javax.swing.JTable tblOrders;
     private javax.swing.JTextField txtItemDesc;
     private javax.swing.JTextField txtItemName;
     private javax.swing.JTextField txtItemPrice;
