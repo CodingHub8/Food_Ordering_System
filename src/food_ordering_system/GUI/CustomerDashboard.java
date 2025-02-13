@@ -9,8 +9,10 @@ import javax.swing.*;
 
 public class CustomerDashboard extends javax.swing.JFrame {
     private CustomerController customerController = new CustomerController();
+    private final String custID;
 
     public CustomerDashboard(String custID) {
+        this.custID = custID;
         setTitle("Customer Interface");
         new Notifications().printReceipt(custID);
         initComponents();
@@ -39,8 +41,21 @@ public class CustomerDashboard extends javax.swing.JFrame {
         txtCustomerReviews = new javax.swing.JTextArea();
         frmOrderItem = new javax.swing.JFrame();
         frmTransactionHistory = new javax.swing.JFrame();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblTransactionHistory = new javax.swing.JTable();
         frmProvideReview = new javax.swing.JFrame();
+        cboSelectOrderID = new javax.swing.JComboBox<>();
+        txtCustID = new javax.swing.JTextField();
+        cboSelectTargetID = new javax.swing.JComboBox<>();
+        spnRating = new javax.swing.JSpinner();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        txtComment = new javax.swing.JTextArea();
+        btnSubmitReview = new javax.swing.JButton();
         frmProvideComplaint = new javax.swing.JFrame();
+        txtComplaintTitle = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        txtComplaintMessage = new javax.swing.JTextArea();
+        btnConfirmComplaint = new javax.swing.JButton();
         pnlCustomer = new javax.swing.JPanel();
         lblWelcome = new javax.swing.JLabel();
         btnViewMenu = new javax.swing.JButton();
@@ -85,6 +100,87 @@ public class CustomerDashboard extends javax.swing.JFrame {
         jScrollPane2.setViewportView(txtCustomerReviews);
 
         frmReadReviews.getContentPane().add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        tblTransactionHistory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Transaction ID", "Customer ID", "Amount", "Timestamp"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tblTransactionHistory);
+
+        frmTransactionHistory.getContentPane().add(jScrollPane3, java.awt.BorderLayout.CENTER);
+
+        frmProvideReview.getContentPane().setLayout(new javax.swing.BoxLayout(frmProvideReview.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
+
+        cboSelectOrderID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        frmProvideReview.getContentPane().add(cboSelectOrderID);
+
+        txtCustID.setEditable(false);
+        txtCustID.setText("CustomerID");
+        frmProvideReview.getContentPane().add(txtCustID);
+
+        cboSelectTargetID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        frmProvideReview.getContentPane().add(cboSelectTargetID);
+        frmProvideReview.getContentPane().add(spnRating);
+
+        txtComment.setColumns(20);
+        txtComment.setRows(5);
+        jScrollPane5.setViewportView(txtComment);
+
+        frmProvideReview.getContentPane().add(jScrollPane5);
+
+        btnSubmitReview.setText("Submit");
+        btnSubmitReview.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitReviewActionPerformed(evt);
+            }
+        });
+        frmProvideReview.getContentPane().add(btnSubmitReview);
+
+        frmProvideComplaint.getContentPane().setLayout(new javax.swing.BoxLayout(frmProvideComplaint.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
+
+        txtComplaintTitle.setText("Complaint Title");
+        txtComplaintTitle.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtComplaintTitleFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtComplaintTitleFocusLost(evt);
+            }
+        });
+        frmProvideComplaint.getContentPane().add(txtComplaintTitle);
+
+        txtComplaintMessage.setColumns(20);
+        txtComplaintMessage.setRows(5);
+        jScrollPane4.setViewportView(txtComplaintMessage);
+
+        frmProvideComplaint.getContentPane().add(jScrollPane4);
+
+        btnConfirmComplaint.setText("Confirm");
+        btnConfirmComplaint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmComplaintActionPerformed(evt);
+            }
+        });
+        frmProvideComplaint.getContentPane().add(btnConfirmComplaint);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new ColorPalette().primaryColor);
@@ -141,6 +237,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnTransactionHistory.setBackground(new ColorPalette().secondaryColor);
         btnTransactionHistory.setText("Transaction History");
         btnTransactionHistory.setPreferredSize(new java.awt.Dimension(140, 30));
+        btnTransactionHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTransactionHistoryActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
@@ -149,6 +250,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnReviews.setBackground(new ColorPalette().secondaryColor);
         btnReviews.setText("Provide Reviews");
         btnReviews.setPreferredSize(new java.awt.Dimension(140, 30));
+        btnReviews.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReviewsActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 6;
@@ -157,6 +263,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnComplaint.setBackground(new ColorPalette().secondaryColor);
         btnComplaint.setText("File a complaint");
         btnComplaint.setPreferredSize(new java.awt.Dimension(140, 30));
+        btnComplaint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnComplaintActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 6;
@@ -219,6 +330,72 @@ public class CustomerDashboard extends javax.swing.JFrame {
         frmReadReviews.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnReadReviewsActionPerformed
 
+    private void btnTransactionHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransactionHistoryActionPerformed
+        tblTransactionHistory.setModel(customerController.loadTransactionData(custID));
+
+        frmTransactionHistory.setVisible(true);
+        frmTransactionHistory.setTitle("Transaction History");
+        frmTransactionHistory.pack();
+        frmTransactionHistory.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnTransactionHistoryActionPerformed
+
+    private void btnComplaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComplaintActionPerformed
+
+        btnConfirmComplaint.setAlignmentX(CENTER_ALIGNMENT);
+        frmProvideComplaint.setVisible(true);
+        frmProvideComplaint.setTitle("Provide Complaint");
+        frmProvideComplaint.pack();
+        frmProvideComplaint.setLocationRelativeTo(null);
+    }//GEN-LAST:event_btnComplaintActionPerformed
+
+    private void btnConfirmComplaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmComplaintActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(null, "Confirm complaint?", "Confirm Complaint", JOptionPane.YES_NO_OPTION);
+
+        if(!custID.startsWith("C")){
+            JOptionPane.showMessageDialog(null, "Please login first");
+            return;
+        }
+
+        if(txtComplaintTitle.getText().equals("Complaint Title") || txtComplaintMessage.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "Please write your complaint");
+            return;
+        }
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            customerController.addComplaints(custID, txtComplaintTitle.getText(), txtComplaintMessage.getText());
+            JOptionPane.showMessageDialog(null, "Complaint Submitted");
+        }
+    }//GEN-LAST:event_btnConfirmComplaintActionPerformed
+
+    private void txtComplaintTitleFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtComplaintTitleFocusGained
+        if(txtComplaintTitle.getText().equals("Complaint Title")){
+            txtComplaintTitle.setText("");
+        }
+    }//GEN-LAST:event_txtComplaintTitleFocusGained
+
+    private void txtComplaintTitleFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtComplaintTitleFocusLost
+        if(txtComplaintTitle.getText().isEmpty()){
+            txtComplaintTitle.setText("Complaint Title");
+        }
+    }//GEN-LAST:event_txtComplaintTitleFocusLost
+
+    private void btnReviewsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReviewsActionPerformed
+        frmProvideReview.setVisible(true);
+        frmProvideReview.setTitle("Provide Review");
+        frmProvideReview.pack();
+        frmProvideReview.setLocationRelativeTo(null);
+
+        customerController.addOrderIDs(cboSelectOrderID, custID);
+        txtCustID.setText(custID);
+        customerController.addTargetIDs(cboSelectTargetID);
+        SpinnerModel value = new SpinnerNumberModel(0.0, 0, 5.0, 0.1);
+        spnRating.setModel(value);
+    }//GEN-LAST:event_btnReviewsActionPerformed
+
+    private void btnSubmitReviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitReviewActionPerformed
+        customerController.addReview((String) cboSelectOrderID.getSelectedItem(), custID, (String) cboSelectTargetID.getSelectedItem(), spnRating.getValue().toString(), txtComment.getText());
+    }//GEN-LAST:event_btnSubmitReviewActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -256,12 +433,16 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnComplaint;
+    private javax.swing.JButton btnConfirmComplaint;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnManageOrders;
     private javax.swing.JButton btnReadReviews;
     private javax.swing.JButton btnReviews;
+    private javax.swing.JButton btnSubmitReview;
     private javax.swing.JButton btnTransactionHistory;
     private javax.swing.JButton btnViewMenu;
+    private javax.swing.JComboBox<String> cboSelectOrderID;
+    private javax.swing.JComboBox<String> cboSelectTargetID;
     private javax.swing.JFrame frmOrderItem;
     private javax.swing.JFrame frmProvideComplaint;
     private javax.swing.JFrame frmProvideReview;
@@ -270,10 +451,19 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private javax.swing.JFrame frmViewMenu;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JPanel pnlCustomer;
+    private javax.swing.JSpinner spnRating;
+    private javax.swing.JTable tblTransactionHistory;
     private javax.swing.JTable tblViewMenu;
+    private javax.swing.JTextArea txtComment;
+    private javax.swing.JTextArea txtComplaintMessage;
+    private javax.swing.JTextField txtComplaintTitle;
+    private javax.swing.JTextField txtCustID;
     private javax.swing.JTextArea txtCustomerReviews;
     // End of variables declaration//GEN-END:variables
 }
