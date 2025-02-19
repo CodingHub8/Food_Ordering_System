@@ -3,11 +3,13 @@ package food_ordering_system.GUI;
 import food_ordering_system.Controller.CustomerController;
 import food_ordering_system.Models.Customer;
 import food_ordering_system.Models.Order;
+import food_ordering_system.Models.MenuItem;
 import food_ordering_system.Utilities.*;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Objects;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -230,6 +232,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         cboNewOrderVendorID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Vendor ID", " " }));
         cboNewOrderVendorID.setPreferredSize(new java.awt.Dimension(120, 25));
+        cboNewOrderVendorID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboNewOrderVendorIDActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -273,6 +280,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnConfirmNewOrder.setBackground(new java.awt.Color(51, 204, 0));
         btnConfirmNewOrder.setForeground(new java.awt.Color(0, 0, 0));
         btnConfirmNewOrder.setText("Confirm");
+        btnConfirmNewOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmNewOrderActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 14;
@@ -886,16 +898,16 @@ public class CustomerDashboard extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "An additional charge of RM5 will be added as delivery fee", "Delivery Fee", JOptionPane.INFORMATION_MESSAGE);
         }
 
-        customerController.addOrder(custID, txtPastVendorID.getText(), txtPastItemIDs.getText(), Double.parseDouble(txtPastAmount.getText().substring(2)), (String) cboPastOption.getSelectedItem());
+        customerController.addOrder(custID, txtPastVendorID.getText(), txtPastItemIDs.getText(), Double.valueOf(txtPastAmount.getText().substring(2)), (String) cboPastOption.getSelectedItem());
     }//GEN-LAST:event_btnConfirmReorderActionPerformed
 
     private void cboSelectOrderActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSelectOrderActionActionPerformed
         if(Objects.requireNonNull(cboSelectOrderAction.getSelectedItem()).equals("Place Order")){
-            btnConfirmNewOrder.setAlignmentX(LEFT_ALIGNMENT);
+            cboNewOrderVendorID.setModel(customerController.loadVendorIDs());
             pnlPlaceOrder.setVisible(true);
             pnlCancelOrder.setVisible(false);
+            txtNewOrderID.setText(new IDUtility().generateOrderID());
         } else if (cboSelectOrderAction.getSelectedItem().equals("Cancel Order")){
-            btnConfirmCancelOrder.setAlignmentX(LEFT_ALIGNMENT);
             pnlPlaceOrder.setVisible(false);
             pnlCancelOrder.setVisible(true);
         } else {
@@ -915,6 +927,81 @@ public class CustomerDashboard extends javax.swing.JFrame {
         
         packFrmOrderItem();
     }//GEN-LAST:event_frmOrderItemWindowOpened
+
+    private void btnConfirmNewOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmNewOrderActionPerformed
+        if(cboNewOrderVendorID.getSelectedItem().equals("Select Vendor ID")){
+            JOptionPane.showMessageDialog(null, "Select a vendor", "Select Vendor", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if(cboNewOrderOption.getSelectedItem().equals("Select an option")){
+            JOptionPane.showMessageDialog(null, "Select dining option", "Select dining option", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnConfirmNewOrderActionPerformed
+
+    private void cboNewOrderVendorIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboNewOrderVendorIDActionPerformed
+        List<MenuItem> menuItems = customerController.getMenuItems((String) cboNewOrderVendorID.getSelectedItem());
+        pnlChkBoxItems.removeAll(); // Clear existing checkboxes to avoid duplicates
+        pnlChkBoxItems.setLayout(new BoxLayout(pnlChkBoxItems, BoxLayout.Y_AXIS)); // Align checkboxes vertically
+
+        double[] totalAmount = {0.0}; // Use an array to store the total amount (effectively final for lambda)
+
+        // Create checkboxes dynamically
+        for (MenuItem menuItem : menuItems) {
+            JCheckBox checkBox = new JCheckBox(menuItem.getName() + " (RM " + menuItem.getPrice() + ")");
+            checkBox.setActionCommand(menuItem.getID()); // Store the item's ID in the action command
+            pnlChkBoxItems.add(checkBox);
+
+            // Add ActionListener to update the total amount
+            checkBox.addActionListener(e -> {
+                if (checkBox.isSelected()) {
+                    totalAmount[0] += menuItem.getPrice(); // Add price when selected
+                } else {
+                    totalAmount[0] -= menuItem.getPrice(); // Subtract price when deselected
+                }
+                txtNewOrderTotalAmount.setText(String.format("%.2f", totalAmount[0])); // Update total amount
+            });
+        }
+
+        txtNewOrderTotalAmount.setText("0.00"); // Initialize total amount
+
+        // Add ActionListener to "Confirm" button to fetch checked items and call addOrder()
+        btnConfirmNewOrder.addActionListener(v -> {
+            // Collect selected item IDs
+            List<String> selectedItemIDs = new ArrayList<>();
+            for (Component component : pnlChkBoxItems.getComponents()) {
+                if (component instanceof JCheckBox) {
+                    JCheckBox checkBox = (JCheckBox) component;
+                    if (checkBox.isSelected()) {
+                        selectedItemIDs.add(checkBox.getActionCommand()); // Get the ID from actionCommand
+                    }
+                }
+            }
+
+            if(cboNewOrderOption.getSelectedItem().equals("Delivery")){
+                JOptionPane.showMessageDialog(null, "An additional charge of RM5 will be added as delivery fee", "Delivery Fee", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            // Convert the list of selected IDs to a string format for addOrder()
+            String itemIDs = "[" + String.join(" ", selectedItemIDs) + "]";
+            txtNewOrderTimestamp.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date())); // Set the timestamp
+
+            // Call addOrder() method with the collected data
+            customerController.addOrder(
+                    custID,
+                    (String) cboNewOrderVendorID.getSelectedItem(),
+                    itemIDs, // Pass the collected item IDs
+                    Double.parseDouble(txtNewOrderTotalAmount.getText()),
+                    (String) Objects.requireNonNull(cboNewOrderOption.getSelectedItem())
+            );
+        });
+
+        // Refresh the panel to reflect the new components
+        pnlChkBoxItems.revalidate();
+        pnlChkBoxItems.repaint();
+        packFrmOrderItem();
+
+    }//GEN-LAST:event_cboNewOrderVendorIDActionPerformed
 
     /**
      * @param args the command line arguments

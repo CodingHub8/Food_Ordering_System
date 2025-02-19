@@ -34,4 +34,8 @@ public class Customer extends User {
     public double getCredit() {
         return credit;
     }
+
+    public void setCredit(double credit) {
+        this.credit = credit;
+    }
 }

@@ -40,10 +40,10 @@ public class CustomerController {
                     break;
                 }
             }
+            return customer;
         } catch (IOException e) {
             throw new RuntimeException("Error reading ile: " + e.getMessage());
         }
-        return customer;
     }
 
     public String getReviews(){
@@ -216,6 +216,18 @@ public class CustomerController {
 
         if(option.equals("Delivery")){
             amount += 5.00;
+            // TODO: assign runner here
+        }
+
+        customer = getCustomerDetails(custID);
+        if(customer != null){
+            if(customer.getCredit() >= amount){
+                customer.setCredit(customer.getCredit() - amount);
+                updateCustomerData();
+            } else if (customer.getCredit() < amount){
+                JOptionPane.showMessageDialog(null, "Insufficient Credits! Please Top up Before Proceeding", "Insufficient Credits", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
 
         existingOrders.add(new Order(newOrderID, custID, vendorID, items, amount, "Pending", option, timestamp));
@@ -239,7 +251,7 @@ public class CustomerController {
         } catch (IOException e) {
             throw new RuntimeException("Error writing orders file: " + e.getMessage());
         }
-        JOptionPane.showMessageDialog(null, "Successfully reordered", "Success", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Successfully ordered", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void addComplaints(String custID, String title, String message) {
@@ -310,6 +322,61 @@ public class CustomerController {
         }
 
         return null;
+    }
+
+    public List<MenuItem> getMenuItems(String vendorID){
+        List<MenuItem> menuItems = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(menuItem.getFilePath()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty() || line.startsWith("Item ID")) {
+                    continue; // Skip empty lines and header row
+                }
+
+                // Split the line into columns
+                String[] parts = line.split(","); // Maximum split into 4 parts
+                //Item ID, Vendor ID, Name, Price (RM), Description
+                if(parts[1].trim().equals(vendorID)){
+                    String itemID = parts[0].trim();
+                    String itemName = parts[2].trim();
+                    double price = Double.parseDouble(parts[3].trim());
+                    String itemDescription = parts[4].trim();
+                    // Add item ID to combo box
+                    menuItems.add(new MenuItem(itemID, vendorID, itemName, price, itemDescription));
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading vendor file: " + e.getMessage());
+        }
+
+        return menuItems;
+    }
+
+    public ComboBoxModel loadVendorIDs(){
+        JComboBox<String> cboVendorIDs = new JComboBox<>();
+        cboVendorIDs.removeAllItems();
+        cboVendorIDs.addItem("Select Vendor ID");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(vendor.getFilePath()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty() || line.startsWith("Vendor ID")) {
+                    continue; // Skip empty lines and header row
+                }
+
+                // Split the line into columns
+                String[] parts = line.split(",", 4); // Maximum split into 4 parts
+                String vendorID = parts[0].trim();
+
+                // Add Runner ID to combo box
+                cboVendorIDs.addItem(vendorID);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading vendor file: " + e.getMessage());
+        }
+
+        return cboVendorIDs.getModel();
     }
 
     public void loadTargetIDs(JComboBox<String> cboTargetIDs) {
@@ -395,5 +462,54 @@ public class CustomerController {
             throw new RuntimeException("Error writing to reviews file: " + e.getMessage());
         }
         JOptionPane.showMessageDialog(null, "Review Submitted", "Review Submitted", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void updateCustomerData(){
+        List<Customer> customers = new ArrayList<>();
+        String header;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(customer.getFilePath()))) {
+            header = br.readLine(); // Skip header
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+
+                // Ensure parts array is correctly populated
+                if (parts.length >= 4) {
+                    String customerID = parts[0].trim();
+                    String customerName = parts[1].trim();
+                    String customerPassword = parts[2].trim();
+                    double customerCredits = Double.parseDouble(parts[3].trim());
+
+                    // Add new Customer to the list
+                    customers.add(new Customer(customerID, customerName, customerPassword, customerCredits));
+                }
+            }
+
+            // Update specific customer if found
+            for (int i = 0; i < customers.size() - 1; i++) {
+                if (customers.get(i).getID().equals(customer.getID())) {
+                    System.out.println(customer.getID());
+                    customers.set(i, customer);
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading customer file: " + e.getMessage());
+        }
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(customer.getFilePath()))){
+            bw.write(header);
+            bw.newLine();
+
+            for(Customer customer : customers){
+                bw.write(customer.getID() + ", " + customer.getName() + ", " + customer.getPassword() + ", " + customer.getCredit());
+                bw.newLine();
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
