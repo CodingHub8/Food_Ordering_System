@@ -299,11 +299,11 @@ public class CustomerController {
         }
     }
 
-    public ComboBoxModel<String> loadOrderIDs(String custID) {
+    public ComboBoxModel<String> loadOrderIDs(String custID, String... status) {
         JComboBox<String> orderIDs = new JComboBox<>();
 
         orderIDs.addItem("Select Order ID");
-        readOrders(custID, "Complete");
+        readOrders(custID, status);
 
         for(Order order : orders){
             if(order.getCustomerID().equals(custID)){
@@ -322,6 +322,64 @@ public class CustomerController {
         }
 
         return null;
+    }
+
+    public Order getOrderForCancel(String orderID, String custID){
+        readOrders(custID, "Pending");
+        for(Order order : orders){
+            if(order.getOrderID().equals(orderID)){
+                return order;
+            }
+        }
+
+        return null;
+    }
+
+    public void cancelOrder(String orderID, String custID) {
+        // Read orders to find the target order and mark it as "Cancelled"
+        readOrders(custID, "Pending");
+        boolean orderFound = false;
+        for (Order order : orders) {
+            if (order.getOrderID().equals(orderID) && order.getCustomerID().equals(custID)) {
+                order.setStatus("Cancelled");
+                orderFound = true;
+                break;
+            }
+        }
+
+        if (!orderFound) {
+            throw new IllegalArgumentException("Order with ID " + orderID + " for Customer " + custID + " not found or not pending.");
+        }
+
+        // Read and update the orders file
+        List<String> fileContents = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(order.getFilePath()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                String currentOrderID = parts[0].trim();
+                String currentCustID = parts[1].trim();
+
+                // Update the status if it's the target order
+                if (currentOrderID.equals(orderID) && currentCustID.equals(custID)) {
+                    parts[5] = "Cancelled"; // Update the status to "Cancelled"
+                    line = String.join(",", parts); // Reconstruct the updated line
+                }
+                fileContents.add(line); // Add the line to the list
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading the orders file: " + e.getMessage());
+        }
+
+        // Write the updated contents back to the file
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(order.getFilePath()))) {
+            for (String contentLine : fileContents) {
+                bw.write(contentLine);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing to the orders file: " + e.getMessage());
+        }
     }
 
     public List<MenuItem> getMenuItems(String vendorID){

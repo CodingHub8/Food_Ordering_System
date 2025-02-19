@@ -297,6 +297,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         cboCancelOrderID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboCancelOrderID.setPreferredSize(new java.awt.Dimension(120, 25));
+        cboCancelOrderID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboCancelOrderIDActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -363,6 +368,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnConfirmCancelOrder.setBackground(new java.awt.Color(255, 0, 0));
         btnConfirmCancelOrder.setForeground(new java.awt.Color(0, 0, 0));
         btnConfirmCancelOrder.setText("Confirm");
+        btnConfirmCancelOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmCancelOrderActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 14;
@@ -781,7 +791,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
         frmProvideReview.pack();
         frmProvideReview.setLocationRelativeTo(null);
 
-        cboSelectOrderID.setModel(customerController.loadOrderIDs(custID));
+        cboSelectOrderID.setModel(customerController.loadOrderIDs(custID, "Complete"));
         txtCustID.setText(custID);
         customerController.loadTargetIDs(cboSelectTargetID);
         SpinnerModel value = new SpinnerNumberModel(0.0, 0, 5.0, 0.1);
@@ -867,7 +877,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
         pnlReorder.setVisible(true);
         packFrmOrderItem();
 
-        cboSelectPastOrderID.setModel(customerController.loadOrderIDs(custID));
+        cboSelectPastOrderID.setModel(customerController.loadOrderIDs(custID, "Complete"));
     }//GEN-LAST:event_btnReorderActionPerformed
 
     private void btnManageOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageOrdersActionPerformed
@@ -910,6 +920,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
         } else if (cboSelectOrderAction.getSelectedItem().equals("Cancel Order")){
             pnlPlaceOrder.setVisible(false);
             pnlCancelOrder.setVisible(true);
+            cboCancelOrderID.setModel(customerController.loadOrderIDs(custID, "Pending"));
         } else {
             pnlPlaceOrder.setVisible(false);
             pnlCancelOrder.setVisible(false);
@@ -1002,6 +1013,37 @@ public class CustomerDashboard extends javax.swing.JFrame {
         packFrmOrderItem();
 
     }//GEN-LAST:event_cboNewOrderVendorIDActionPerformed
+
+    private void cboCancelOrderIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCancelOrderIDActionPerformed
+        Order order = customerController.getOrderForCancel((String) cboCancelOrderID.getSelectedItem(), custID);
+        txtCancelOrderVendorID.setText(order.getVendorID());
+        txtCancelOrderItemIDs.setText(order.getItemIDs().toString());
+        txtCancelOrderTotalAmount.setText("RM" + order.getTotalAmount());
+        txtCancelOrderStatus.setText(order.getStatus());
+        txtCancelOrderOption.setText(order.getOption());
+        txtCancelOrderTimestamp.setText(order.getTimestamp());
+    }//GEN-LAST:event_cboCancelOrderIDActionPerformed
+
+    private void btnConfirmCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmCancelOrderActionPerformed
+        //can only cancel orders in "Pending" status
+        if(cboCancelOrderID.getSelectedItem().equals("Select Order ID")){
+            JOptionPane.showMessageDialog(null, "Please select an order ID to cancel");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(null, "Are you sure to cancel the order?", "Cancel order?", JOptionPane.YES_NO_OPTION);
+
+        if(confirm == JOptionPane.YES_OPTION){
+            customerController.cancelOrder((String) cboCancelOrderID.getSelectedItem(), custID);
+            JOptionPane.showMessageDialog(null, "Order cancelled");
+            txtCancelOrderVendorID.setText("Vendor ID");
+            txtCancelOrderItemIDs.setText("");
+            txtCancelOrderTotalAmount.setText("Total Amount (RM)");
+            txtCancelOrderStatus.setText("Order Status");
+            txtCancelOrderOption.setText("Order Option");
+            txtCancelOrderTimestamp.setText("Timestamp");
+        }
+    }//GEN-LAST:event_btnConfirmCancelOrderActionPerformed
 
     /**
      * @param args the command line arguments
