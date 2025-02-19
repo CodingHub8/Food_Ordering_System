@@ -15,6 +15,8 @@ public class MenuItem {
         this.description = description;
     }
 
+    public MenuItem() {/*Default Constructor*/}
+
     public String getID() {
         return ID;
     }
@@ -45,5 +47,9 @@ public class MenuItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getFilePath(){
+        return "src/food_ordering_system/Data/menu_items.txt";
     }
 }

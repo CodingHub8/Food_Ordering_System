@@ -23,6 +23,8 @@ public class Order {
         this.timestamp = timestamp;
     }
 
+    public Order(){/*Default Constructor*/}
+
     public String getOrderID() {
         return orderID;
     }
@@ -41,6 +43,10 @@ public class Order {
 
     public double getTotalAmount() {
         return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public String getStatus() {

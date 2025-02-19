@@ -89,6 +89,23 @@ public class IDUtility {
         return String.format("%sI%03d", vendorID, nextID); // Format as V###I###
     }
 
+    public String generateOrderID() {
+        String ordersFilePath = "src/food_ordering_system/Data/orders.txt";
+        int orderCount = 1;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(ordersFilePath))) {
+            String line;
+            br.readLine();//skip header
+            while ((line = br.readLine()) != null) {
+                orderCount++;
+            }
+        } catch (IOException e) {
+            // If the file does not exist, start from 1
+        }
+
+        return String.format("ORD%03d", orderCount);
+    }
+
     public List<String> parseItemIDs(String input) {
         // Remove the square brackets (if present)
         String trimmed = input.trim();
@@ -102,5 +119,4 @@ public class IDUtility {
         // Return as List<String>
         return Arrays.asList(items);
     }
-
 }

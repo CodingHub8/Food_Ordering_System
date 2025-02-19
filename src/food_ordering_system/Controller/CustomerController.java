@@ -1,25 +1,54 @@
 package food_ordering_system.Controller;
 
+import food_ordering_system.Models.*;
 import food_ordering_system.Utilities.CustomTableModel;
+import food_ordering_system.Utilities.IDUtility;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class CustomerController {
-    private final String reviewsFilePath = "src/food_ordering_system/Data/reviews.txt";
-    private final String vendorsFilePath = "src/food_ordering_system/Data/vendors.txt";
-    private final String runnersFilePath = "src/food_ordering_system/Data/delivery_runners.txt";
-    private final String menuItemsFilePath = "src/food_ordering_system/Data/menu_items.txt";
     private final String transactionFilePath = "src/food_ordering_system/Data/transactions.txt";
     private final String complaintFilePath = "src/food_ordering_system/Data/complaints.txt";
-    private final String ordersFilePath = "src/food_ordering_system/Data/orders.txt";
+    private Customer customer = new Customer("", "", "", 0.0);
+    private MenuItem menuItem = new MenuItem();
+    private Vendor vendor = new Vendor("", "", "", 0.0);
+    private Runner runner = new Runner("", "", "", 0.0);
+    private Review review = new Review();
+    private Order order = new Order();
+    private List<Order> orders = new ArrayList<>();
+
+    public Customer getCustomerDetails(String custID){
+        try (BufferedReader br = new BufferedReader(new FileReader(customer.getFilePath()))) {
+            String line;
+            br.readLine();//skip header
+
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                if(parts[0].equals(custID)){
+                    for(int i = 0; i < parts.length; i++){
+                        parts[i] = parts[i].trim();
+                    }
+
+                    customer = new Customer(parts[0], parts[1], parts[2], Double.parseDouble(parts[3]));
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading ile: " + e.getMessage());
+        }
+        return customer;
+    }
 
     public String getReviews(){
         String reviews = "";
-        try (BufferedReader br = new BufferedReader(new FileReader(reviewsFilePath));) {
+        try (BufferedReader br = new BufferedReader(new FileReader(review.getFilePath()))) {
             String line;
             br.readLine();// skip header
             while ((line = br.readLine()) != null) {
@@ -63,9 +92,9 @@ public class CustomerController {
         return new CustomTableModel(data, columnNames);
     }
 
-    private List<String[]> readMenuDataFromFile(){
+    private List<String[]> readMenuData(){
         List<String[]> data = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(menuItemsFilePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(menuItem.getFilePath()))) {
             String line;
             br.readLine();// skip header
             while ((line = br.readLine()) != null) {
@@ -79,7 +108,7 @@ public class CustomerController {
     }
 
     public TableModel loadMenuData() {
-        List<String[]> data = readMenuDataFromFile();
+        List<String[]> data = readMenuData();
 
         String header = "Item ID, Vendor ID, Name, Price (RM), Description";
         String[] columnNames = header.split(",");
@@ -91,93 +120,126 @@ public class CustomerController {
         return new CustomTableModel(data, columnNames);
     }
 
-    public String[] viewItems(){
-        String[] itemData = new String[5];
+    public TableModel loadActiveOrders(String custID){
+        List<String[]> data = readOrders(custID, "Pending", "Preparing");
 
-        try (BufferedReader br = new BufferedReader(new FileReader(menuItemsFilePath))) {
+        String header = "Order ID, CustomerID, Vendor ID, itemID(s), Total Amount (RM), Status, Option, Timestamp";
+        String[] columnNames = header.split(",");
+
+        for(int i = 0; i < columnNames.length; i++){
+            columnNames[i] = columnNames[i].trim();
+        }
+
+        return new CustomTableModel(data, columnNames);
+    }
+
+    private List<String[]> readOrders(String custID, String... status){
+        List<String[]> data = new ArrayList<>();
+        orders.clear();//prevent duplicate entry
+
+        try (BufferedReader br = new BufferedReader(new FileReader(order.getFilePath()))) {
             String line;
-            br.readLine();  // Skip the header line
-
+            br.readLine();// skip header
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
+                String[] row = line.split(",");
+                List<String> itemIDs = new IDUtility().parseItemIDs(row[3]);
 
-                itemData[0] = parts[0].trim();//item ID
-                itemData[1] = parts[1].trim();//vendor ID
-                itemData[2] = parts[2].trim();//name
-                itemData[3] = parts[3].trim();//price
-                itemData[4] = parts[4].trim();//description
+                for(int i = 0; i < row.length; i++){
+                    row[i] = row[i].trim();
+                }
+
+                order = new Order(row[0], row[1], row[2], itemIDs, Double.parseDouble(row[4]), row[5], row[6], row[7]);
+
+                if(row[1].equals(custID)) {
+                    if(status.length > 1){
+                        if(row[5].equals(status[0]) || row[5].equals(status[1])){
+                            orders.add(order);
+                            data.add(row);
+                        }
+                    } else {
+                        if(row[5].equals(status[0])){
+                            orders.add(order);
+                            data.add(row);
+                        }
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return itemData;//not found
+        return data;
     }
 
-    public void addRating(String targetID) {
-        List<Double> ratings = new ArrayList<>();
-        List<String> fileContents = new ArrayList<>();
-        boolean targetFound = false;
-        String targetFilePath;
-
-        // Determine if the target is a Vendor or Runner
-        if (targetID.startsWith("V")) {
-            targetFilePath = vendorsFilePath;
-        } else if (targetID.startsWith("R")) {
-            targetFilePath = runnersFilePath;
-        } else {
-            throw new IllegalArgumentException("Invalid Target ID: " + targetID);
+    public TableModel loadOrderHistory(String custID){
+        List<String[]> data = readOrders(custID, "Complete");
+        String header = "Order ID, CustomerID, Vendor ID, itemID(s), Total Amount (RM), Status, Option, Timestamp";
+        String[] columnNames = header.split(",");
+        for(int i = 0; i < columnNames.length; i++){
+            columnNames[i] = columnNames[i].trim();
         }
 
-        // Read reviews.txt and collect ratings for the given target
-        try (BufferedReader br = new BufferedReader(new FileReader(reviewsFilePath))) {
+        return new CustomTableModel(data, columnNames);
+    }
+
+    private List<Order> readExistingOrder(){
+        List<Order> existingOrders = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(order.getFilePath()))) {
             String line;
+            br.readLine(); // Skip header
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts[3].equals(targetID)) { // Check if review is for the target
-                    ratings.add(Double.parseDouble(parts[4])); // Extract rating
+                String[] row = line.split(",");
+
+                for (int i = 0; i < row.length; i++){
+                    row[i] = row[i].trim();
                 }
+                String existingItemIDs = row[3].substring(1, row[3].length() - 1);
+                List<String> existingItems = Arrays.asList(existingItemIDs.split(" "));
+
+                existingOrders.add(new Order(row[0], row[1], row[2], existingItems, Double.parseDouble(row[4]), row[5], row[6], row[7])); // Convert line to Order object
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error reading reviews file: " + e.getMessage());
+            throw new RuntimeException("Error reading orders file: " + e.getMessage());
+        }
+        return existingOrders;
+    }
+
+    public void addOrder(String custID, String vendorID, String itemIDs, Double amount, String option){
+        List<Order> existingOrders = readExistingOrder();
+
+        //write new data
+        String newOrderID = new IDUtility().generateOrderID();
+        itemIDs = itemIDs.substring(1, itemIDs.length() - 1);
+        List<String> items = Arrays.asList(itemIDs.split(" "));
+
+        String timestamp = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
+
+        if(option.equals("Delivery")){
+            amount += 5.00;
         }
 
-        // Calculate average rating
-        double averageRating = 0.0;
-        if (!ratings.isEmpty()) {
-            double sum = 0;
-            for (double rate : ratings) {
-                sum += rate;
-            }
-            averageRating = sum / ratings.size();
-        }
+        existingOrders.add(new Order(newOrderID, custID, vendorID, items, amount, "Pending", option, timestamp));
 
-        // Read the correct file (vendors.txt or delivery_runners.txt) and update the rating
-        try (BufferedReader br = new BufferedReader(new FileReader(targetFilePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(order.getFilePath()))) {
+            bw.write("Order ID, CustomerID, Vendor ID, itemID(s), Total Amount (RM), Status, Option, Timestamp");//header
+            bw.newLine();
 
-                if (parts[0].equals(targetID)) { // Found target (vendor or runner)
-                    parts[3] = String.format("%.1f", averageRating); // Update rating
-                    targetFound = true;
+            for (Order order : existingOrders) {
+                itemIDs = "[";
+                for(String itemID : order.getItemIDs()){
+                    itemIDs += itemID + " ";
                 }
-                fileContents.add(String.join(",", parts));
+                itemIDs = itemIDs.trim() + "]";
+
+                bw.write(order.getOrderID() + ", " + order.getCustomerID() + ", " + order.getVendorID() +
+                        ", " + itemIDs + ", " + order.getTotalAmount() + ", " + order.getStatus() +
+                        ", " + order.getOption() + ", " + order.getTimestamp());
+                bw.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException("Error reading file: " + e.getMessage());
+            throw new RuntimeException("Error writing orders file: " + e.getMessage());
         }
-
-        // Write the updated rating back to the correct file
-        if (targetFound) {
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(targetFilePath))) {
-                for (String line : fileContents) {
-                    bw.write(line);
-                    bw.newLine();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException("Error updating rating: " + e.getMessage());
-            }
-        }
+        JOptionPane.showMessageDialog(null, "Successfully reordered", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void addComplaints(String custID, String title, String message) {
@@ -225,35 +287,36 @@ public class CustomerController {
         }
     }
 
-    public void addOrderIDs(JComboBox<String> cboOrderIDs, String custID) {
-        cboOrderIDs.removeAllItems();
-        cboOrderIDs.addItem("Select Order ID");
-        try (BufferedReader br = new BufferedReader(new FileReader(ordersFilePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty() || line.startsWith("Order ID")) {
-                    continue; // Skip empty lines and header row
-                }
+    public ComboBoxModel<String> loadOrderIDs(String custID) {
+        JComboBox<String> orderIDs = new JComboBox<>();
 
-                // Split the line into columns
-                String[] parts = line.split(",", 8); // Maximum split into 8 parts
-                String orderID = parts[0].trim();
-                String customerID = parts[1].trim();
+        orderIDs.addItem("Select Order ID");
+        readOrders(custID, "Complete");
 
-                // Add to combo box if Customer ID matches
-                if (customerID.equals(custID)) {
-                    cboOrderIDs.addItem(orderID);
-                }
+        for(Order order : orders){
+            if(order.getCustomerID().equals(custID)){
+                orderIDs.addItem(order.getOrderID());
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading orders file: " + e.getMessage());
         }
+        return orderIDs.getModel();
     }
 
-    public void addTargetIDs(JComboBox<String> cboTargetIDs) {
+    public Order getOrderForReorder(String orderID, String custID) {
+        readOrders(custID, "Complete");
+        for(Order order : orders){
+            if(order.getOrderID().equals(orderID)){
+                return order;
+            }
+        }
+
+        return null;
+    }
+
+    public void loadTargetIDs(JComboBox<String> cboTargetIDs) {
         cboTargetIDs.removeAllItems();
         cboTargetIDs.addItem("Select Target ID");
-        try (BufferedReader br = new BufferedReader(new FileReader(runnersFilePath))) {
+
+        try (BufferedReader br = new BufferedReader(new FileReader(runner.getFilePath()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty() || line.startsWith("Runner ID")) {
@@ -271,7 +334,7 @@ public class CustomerController {
             throw new RuntimeException("Error reading runner file: " + e.getMessage());
         }
 
-        try (BufferedReader br = new BufferedReader(new FileReader("vendor.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(vendor.getFilePath()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty() || line.startsWith("Vendor ID")) {
@@ -291,12 +354,11 @@ public class CustomerController {
     }
 
     public void addReview(String orderID, String custID, String targetID, String rating, String comment) {
-        String reviewsFilePath = "reviews.txt"; // Path to reviews.txt
         List<String> fileContents = new ArrayList<>();
         String newReviewID = "REV001";
 
         // Step 1: Read the file to get the current reviews and generate the next Review ID
-        try (BufferedReader br = new BufferedReader(new FileReader(reviewsFilePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(review.getFilePath()))) {
             String line;
             String lastReviewID = null;
             while ((line = br.readLine()) != null) {
@@ -322,7 +384,7 @@ public class CustomerController {
         fileContents.add(newReviewEntry);
 
         // Step 3: Write all reviews (including the new one) back to the file
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(reviewsFilePath))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(review.getFilePath()))) {
             bw.write("Review ID, Order ID, Customer ID, Target ID, Rating, Comment"); // Write header
             bw.newLine();
             for (String line : fileContents) {
@@ -332,5 +394,6 @@ public class CustomerController {
         } catch (IOException e) {
             throw new RuntimeException("Error writing to reviews file: " + e.getMessage());
         }
+        JOptionPane.showMessageDialog(null, "Review Submitted", "Review Submitted", JOptionPane.INFORMATION_MESSAGE);
     }
 }

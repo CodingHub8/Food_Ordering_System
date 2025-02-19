@@ -1,21 +1,30 @@
 package food_ordering_system.GUI;
 
 import food_ordering_system.Controller.CustomerController;
+import food_ordering_system.Models.Customer;
+import food_ordering_system.Models.Order;
 import food_ordering_system.Utilities.*;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Objects;
 
 import javax.swing.*;
 
 public class CustomerDashboard extends javax.swing.JFrame {
     private CustomerController customerController = new CustomerController();
+    private Customer customer;
     private final String custID;
 
     public CustomerDashboard(String custID) {
         this.custID = custID;
         setTitle("Customer Interface");
+        customer = customerController.getCustomerDetails(custID);
+
         new Notifications().printReceipt(custID);
         initComponents();
+        lblWelcome.setText("Welcome " + customer.getName());
+
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         new LoginRedirect().logout(this);
@@ -40,6 +49,46 @@ public class CustomerDashboard extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtCustomerReviews = new javax.swing.JTextArea();
         frmOrderItem = new javax.swing.JFrame();
+        pnlOrderButtons = new javax.swing.JPanel();
+        btnPlaceCancelOrder = new javax.swing.JButton();
+        btnOrderStatus = new javax.swing.JButton();
+        btnOrderHistory = new javax.swing.JButton();
+        btnReorder = new javax.swing.JButton();
+        pnlOrderContent = new javax.swing.JPanel();
+        pnlPlaceCancelOrder = new javax.swing.JPanel();
+        cboSelectOrderAction = new javax.swing.JComboBox<>();
+        pnlPlaceOrder = new javax.swing.JPanel();
+        txtNewOrderID = new javax.swing.JTextField();
+        cboNewOrderVendorID = new javax.swing.JComboBox<>();
+        pnlChkBoxItems = new javax.swing.JPanel();
+        chkBox = new javax.swing.JCheckBox();
+        txtNewOrderTotalAmount = new javax.swing.JTextField();
+        cboNewOrderOption = new javax.swing.JComboBox<>();
+        txtNewOrderTimestamp = new javax.swing.JTextField();
+        btnConfirmNewOrder = new javax.swing.JButton();
+        pnlCancelOrder = new javax.swing.JPanel();
+        cboCancelOrderID = new javax.swing.JComboBox<>();
+        txtCancelOrderVendorID = new javax.swing.JTextField();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        txtCancelOrderItemIDs = new javax.swing.JTextArea();
+        txtCancelOrderTotalAmount = new javax.swing.JTextField();
+        txtCancelOrderStatus = new javax.swing.JTextField();
+        txtCancelOrderOption = new javax.swing.JTextField();
+        txtCancelOrderTimestamp = new javax.swing.JTextField();
+        btnConfirmCancelOrder = new javax.swing.JButton();
+        scrlPnlOrderStatus = new javax.swing.JScrollPane();
+        tblOrderStatus = new javax.swing.JTable();
+        scrlPnlOrderHistory = new javax.swing.JScrollPane();
+        tblOrderHistory = new javax.swing.JTable();
+        pnlReorder = new javax.swing.JPanel();
+        cboSelectPastOrderID = new javax.swing.JComboBox<>();
+        txtPastVendorID = new javax.swing.JTextField();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        txtPastItemIDs = new javax.swing.JTextArea();
+        txtPastAmount = new javax.swing.JTextField();
+        cboPastOption = new javax.swing.JComboBox<>();
+        txtPastOrderTime = new javax.swing.JTextField();
+        btnConfirmReorder = new javax.swing.JButton();
         frmTransactionHistory = new javax.swing.JFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblTransactionHistory = new javax.swing.JTable();
@@ -101,6 +150,332 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         frmReadReviews.getContentPane().add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
+        frmOrderItem.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                frmOrderItemWindowOpened(evt);
+            }
+        });
+        java.awt.GridBagLayout frmOrderItemLayout = new java.awt.GridBagLayout();
+        frmOrderItemLayout.columnWidths = new int[] {0};
+        frmOrderItemLayout.rowHeights = new int[] {0, 5, 0};
+        frmOrderItem.getContentPane().setLayout(frmOrderItemLayout);
+
+        btnPlaceCancelOrder.setText("Place/Cancel Order");
+        btnPlaceCancelOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPlaceCancelOrderActionPerformed(evt);
+            }
+        });
+        pnlOrderButtons.add(btnPlaceCancelOrder);
+
+        btnOrderStatus.setText("Order Status");
+        btnOrderStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOrderStatusActionPerformed(evt);
+            }
+        });
+        pnlOrderButtons.add(btnOrderStatus);
+
+        btnOrderHistory.setText("Order History");
+        btnOrderHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOrderHistoryActionPerformed(evt);
+            }
+        });
+        pnlOrderButtons.add(btnOrderHistory);
+
+        btnReorder.setText("Reorder");
+        btnReorder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReorderActionPerformed(evt);
+            }
+        });
+        pnlOrderButtons.add(btnReorder);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        frmOrderItem.getContentPane().add(pnlOrderButtons, gridBagConstraints);
+
+        java.awt.GridBagLayout pnlOrderContentLayout = new java.awt.GridBagLayout();
+        pnlOrderContentLayout.columnWidths = new int[] {0, 5, 0, 5, 0, 5, 0};
+        pnlOrderContentLayout.rowHeights = new int[] {0};
+        pnlOrderContent.setLayout(pnlOrderContentLayout);
+
+        pnlPlaceCancelOrder.setPreferredSize(new java.awt.Dimension(400, 300));
+        pnlPlaceCancelOrder.setLayout(new javax.swing.BoxLayout(pnlPlaceCancelOrder, javax.swing.BoxLayout.Y_AXIS));
+
+        cboSelectOrderAction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Action", "Place Order", "Cancel Order" }));
+        cboSelectOrderAction.setMaximumSize(new java.awt.Dimension(300, 25));
+        cboSelectOrderAction.setMinimumSize(new java.awt.Dimension(300, 25));
+        cboSelectOrderAction.setPreferredSize(new java.awt.Dimension(300, 25));
+        cboSelectOrderAction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboSelectOrderActionActionPerformed(evt);
+            }
+        });
+        pnlPlaceCancelOrder.add(cboSelectOrderAction);
+
+        pnlPlaceOrder.setPreferredSize(new java.awt.Dimension(300, 220));
+        pnlPlaceOrder.setLayout(new java.awt.GridBagLayout());
+
+        txtNewOrderID.setEditable(false);
+        txtNewOrderID.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtNewOrderID.setText("Order ID");
+        txtNewOrderID.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        pnlPlaceOrder.add(txtNewOrderID, gridBagConstraints);
+
+        cboNewOrderVendorID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Vendor ID", " " }));
+        cboNewOrderVendorID.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        pnlPlaceOrder.add(cboNewOrderVendorID, gridBagConstraints);
+
+        pnlChkBoxItems.setLayout(new javax.swing.BoxLayout(pnlChkBoxItems, javax.swing.BoxLayout.Y_AXIS));
+
+        chkBox.setText("Template Checkbox");
+        pnlChkBoxItems.add(chkBox);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        pnlPlaceOrder.add(pnlChkBoxItems, gridBagConstraints);
+
+        txtNewOrderTotalAmount.setEditable(false);
+        txtNewOrderTotalAmount.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtNewOrderTotalAmount.setText("Total Amount (RM)");
+        txtNewOrderTotalAmount.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        pnlPlaceOrder.add(txtNewOrderTotalAmount, gridBagConstraints);
+
+        cboNewOrderOption.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select an option", "Dine-in", "Takeaway", "Delivery" }));
+        cboNewOrderOption.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        pnlPlaceOrder.add(cboNewOrderOption, gridBagConstraints);
+
+        txtNewOrderTimestamp.setEditable(false);
+        txtNewOrderTimestamp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtNewOrderTimestamp.setText("Timestamp");
+        txtNewOrderTimestamp.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 12;
+        pnlPlaceOrder.add(txtNewOrderTimestamp, gridBagConstraints);
+
+        btnConfirmNewOrder.setBackground(new java.awt.Color(51, 204, 0));
+        btnConfirmNewOrder.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirmNewOrder.setText("Confirm");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 14;
+        pnlPlaceOrder.add(btnConfirmNewOrder, gridBagConstraints);
+
+        pnlPlaceCancelOrder.add(pnlPlaceOrder);
+
+        pnlCancelOrder.setPreferredSize(new java.awt.Dimension(300, 400));
+        pnlCancelOrder.setLayout(new java.awt.GridBagLayout());
+
+        cboCancelOrderID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboCancelOrderID.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        pnlCancelOrder.add(cboCancelOrderID, gridBagConstraints);
+
+        txtCancelOrderVendorID.setEditable(false);
+        txtCancelOrderVendorID.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCancelOrderVendorID.setText("Vendor ID");
+        txtCancelOrderVendorID.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        pnlCancelOrder.add(txtCancelOrderVendorID, gridBagConstraints);
+
+        jScrollPane6.setPreferredSize(new java.awt.Dimension(240, 50));
+
+        txtCancelOrderItemIDs.setEditable(false);
+        txtCancelOrderItemIDs.setColumns(20);
+        txtCancelOrderItemIDs.setRows(5);
+        txtCancelOrderItemIDs.setPreferredSize(new java.awt.Dimension(240, 50));
+        jScrollPane6.setViewportView(txtCancelOrderItemIDs);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        pnlCancelOrder.add(jScrollPane6, gridBagConstraints);
+
+        txtCancelOrderTotalAmount.setEditable(false);
+        txtCancelOrderTotalAmount.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCancelOrderTotalAmount.setText("Total Amount (RM)");
+        txtCancelOrderTotalAmount.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        pnlCancelOrder.add(txtCancelOrderTotalAmount, gridBagConstraints);
+
+        txtCancelOrderStatus.setEditable(false);
+        txtCancelOrderStatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCancelOrderStatus.setText("Status");
+        txtCancelOrderStatus.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        pnlCancelOrder.add(txtCancelOrderStatus, gridBagConstraints);
+
+        txtCancelOrderOption.setEditable(false);
+        txtCancelOrderOption.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCancelOrderOption.setText("Option");
+        txtCancelOrderOption.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        pnlCancelOrder.add(txtCancelOrderOption, gridBagConstraints);
+
+        txtCancelOrderTimestamp.setEditable(false);
+        txtCancelOrderTimestamp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCancelOrderTimestamp.setText("Timestamp");
+        txtCancelOrderTimestamp.setPreferredSize(new java.awt.Dimension(120, 25));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 12;
+        pnlCancelOrder.add(txtCancelOrderTimestamp, gridBagConstraints);
+
+        btnConfirmCancelOrder.setBackground(new java.awt.Color(255, 0, 0));
+        btnConfirmCancelOrder.setForeground(new java.awt.Color(0, 0, 0));
+        btnConfirmCancelOrder.setText("Confirm");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 14;
+        pnlCancelOrder.add(btnConfirmCancelOrder, gridBagConstraints);
+
+        pnlPlaceCancelOrder.add(pnlCancelOrder);
+
+        pnlOrderContent.add(pnlPlaceCancelOrder, new java.awt.GridBagConstraints());
+
+        tblOrderStatus.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        scrlPnlOrderStatus.setViewportView(tblOrderStatus);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        pnlOrderContent.add(scrlPnlOrderStatus, gridBagConstraints);
+
+        tblOrderHistory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        scrlPnlOrderHistory.setViewportView(tblOrderHistory);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        pnlOrderContent.add(scrlPnlOrderHistory, gridBagConstraints);
+
+        java.awt.GridBagLayout pnlReorderLayout = new java.awt.GridBagLayout();
+        pnlReorderLayout.columnWidths = new int[] {0};
+        pnlReorderLayout.rowHeights = new int[] {0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0, 5, 0};
+        pnlReorder.setLayout(pnlReorderLayout);
+
+        cboSelectPastOrderID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboSelectPastOrderID.setPreferredSize(new java.awt.Dimension(200, 30));
+        cboSelectPastOrderID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboSelectPastOrderIDActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        pnlReorder.add(cboSelectPastOrderID, gridBagConstraints);
+
+        txtPastVendorID.setEditable(false);
+        txtPastVendorID.setText("Vendor ID");
+        txtPastVendorID.setPreferredSize(new java.awt.Dimension(200, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        pnlReorder.add(txtPastVendorID, gridBagConstraints);
+
+        txtPastItemIDs.setEditable(false);
+        txtPastItemIDs.setColumns(20);
+        txtPastItemIDs.setRows(5);
+        txtPastItemIDs.setText("Item IDs");
+        jScrollPane7.setViewportView(txtPastItemIDs);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        pnlReorder.add(jScrollPane7, gridBagConstraints);
+
+        txtPastAmount.setEditable(false);
+        txtPastAmount.setText("Total Amount (RM)");
+        txtPastAmount.setPreferredSize(new java.awt.Dimension(200, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        pnlReorder.add(txtPastAmount, gridBagConstraints);
+
+        cboPastOption.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select an option", "Dine-in", "Takeaway", "Delivery" }));
+        cboPastOption.setPreferredSize(new java.awt.Dimension(200, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        pnlReorder.add(cboPastOption, gridBagConstraints);
+
+        txtPastOrderTime.setEditable(false);
+        txtPastOrderTime.setText("Timestamp");
+        txtPastOrderTime.setPreferredSize(new java.awt.Dimension(200, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        pnlReorder.add(txtPastOrderTime, gridBagConstraints);
+
+        btnConfirmReorder.setText("Reorder");
+        btnConfirmReorder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmReorderActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 12;
+        pnlReorder.add(btnConfirmReorder, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 0;
+        pnlOrderContent.add(pnlReorder, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        frmOrderItem.getContentPane().add(pnlOrderContent, gridBagConstraints);
+
         tblTransactionHistory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -131,6 +506,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         frmProvideReview.getContentPane().setLayout(new javax.swing.BoxLayout(frmProvideReview.getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         cboSelectOrderID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboSelectOrderID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboSelectOrderIDActionPerformed(evt);
+            }
+        });
         frmProvideReview.getContentPane().add(cboSelectOrderID);
 
         txtCustID.setEditable(false);
@@ -229,6 +609,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         btnManageOrders.setBackground(new ColorPalette().secondaryColor);
         btnManageOrders.setText("Orders");
         btnManageOrders.setPreferredSize(new java.awt.Dimension(140, 30));
+        btnManageOrders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManageOrdersActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 4;
@@ -340,7 +725,6 @@ public class CustomerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTransactionHistoryActionPerformed
 
     private void btnComplaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComplaintActionPerformed
-
         btnConfirmComplaint.setAlignmentX(CENTER_ALIGNMENT);
         frmProvideComplaint.setVisible(true);
         frmProvideComplaint.setTitle("Provide Complaint");
@@ -349,17 +733,17 @@ public class CustomerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnComplaintActionPerformed
 
     private void btnConfirmComplaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmComplaintActionPerformed
-        int confirm = JOptionPane.showConfirmDialog(null, "Confirm complaint?", "Confirm Complaint", JOptionPane.YES_NO_OPTION);
-
         if(!custID.startsWith("C")){
             JOptionPane.showMessageDialog(null, "Please login first");
             return;
         }
 
-        if(txtComplaintTitle.getText().equals("Complaint Title") || txtComplaintMessage.getText().equals("")){
+        if(txtComplaintTitle.getText().equals("Complaint Title") || txtComplaintMessage.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Please write your complaint");
             return;
         }
+
+        int confirm = JOptionPane.showConfirmDialog(null, "Confirm complaint?", "Confirm Complaint", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             customerController.addComplaints(custID, txtComplaintTitle.getText(), txtComplaintMessage.getText());
@@ -385,16 +769,152 @@ public class CustomerDashboard extends javax.swing.JFrame {
         frmProvideReview.pack();
         frmProvideReview.setLocationRelativeTo(null);
 
-        customerController.addOrderIDs(cboSelectOrderID, custID);
+        cboSelectOrderID.setModel(customerController.loadOrderIDs(custID));
         txtCustID.setText(custID);
-        customerController.addTargetIDs(cboSelectTargetID);
+        customerController.loadTargetIDs(cboSelectTargetID);
         SpinnerModel value = new SpinnerNumberModel(0.0, 0, 5.0, 0.1);
         spnRating.setModel(value);
     }//GEN-LAST:event_btnReviewsActionPerformed
 
     private void btnSubmitReviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitReviewActionPerformed
+        if(Objects.requireNonNull(cboSelectOrderID.getSelectedItem()).equals("Select Order ID")){
+            JOptionPane.showMessageDialog(null, "Order ID not selected", "Select Order ID", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if(Objects.requireNonNull(cboSelectTargetID.getSelectedItem()).equals("Select Target ID")){
+            JOptionPane.showMessageDialog(null, "Item ID not selected", "Select Item ID", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if(txtComment.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Cannot leave empty review", "Leave a comment", JOptionPane.WARNING_MESSAGE);
+        }
+
         customerController.addReview((String) cboSelectOrderID.getSelectedItem(), custID, (String) cboSelectTargetID.getSelectedItem(), spnRating.getValue().toString(), txtComment.getText());
     }//GEN-LAST:event_btnSubmitReviewActionPerformed
+
+    private void cboSelectOrderIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSelectOrderIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboSelectOrderIDActionPerformed
+
+    private void cboSelectPastOrderIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSelectPastOrderIDActionPerformed
+        Order order = customerController.getOrderForReorder((String) cboSelectPastOrderID.getSelectedItem(), custID);
+        
+        if(order != null){
+            txtPastVendorID.setText(order.getVendorID());
+            txtPastItemIDs.setText("");
+            txtPastItemIDs.append("[");
+
+            for(String itemID : order.getItemIDs()){
+                txtPastItemIDs.append(itemID + " ");
+            }
+
+            txtPastItemIDs.append("]");
+
+            txtPastAmount.setText("RM" + order.getTotalAmount());
+            txtPastOrderTime.setText(order.getTimestamp());
+        }
+    }//GEN-LAST:event_cboSelectPastOrderIDActionPerformed
+
+    private void btnPlaceCancelOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlaceCancelOrderActionPerformed
+        scrlPnlOrderStatus.setVisible(false);
+        scrlPnlOrderHistory.setVisible(false);
+        pnlReorder.setVisible(false);
+        pnlPlaceCancelOrder.setVisible(true);
+        packFrmOrderItem();
+        
+        pnlCancelOrder.setVisible(false);
+        cboSelectOrderAction.setSelectedIndex(0);
+    }//GEN-LAST:event_btnPlaceCancelOrderActionPerformed
+
+    private void btnOrderStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderStatusActionPerformed
+        pnlPlaceCancelOrder.setVisible(false);
+        scrlPnlOrderHistory.setVisible(false);
+        pnlReorder.setVisible(false);
+        scrlPnlOrderStatus.setVisible(true);
+        packFrmOrderItem();
+
+        tblOrderStatus.setModel(customerController.loadActiveOrders(custID));
+    }//GEN-LAST:event_btnOrderStatusActionPerformed
+
+    private void btnOrderHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderHistoryActionPerformed
+        pnlPlaceCancelOrder.setVisible(false);
+        scrlPnlOrderStatus.setVisible(false);
+        pnlReorder.setVisible(false);
+        scrlPnlOrderHistory.setVisible(true);
+        packFrmOrderItem();
+
+        tblOrderHistory.setModel(customerController.loadOrderHistory(custID));
+    }//GEN-LAST:event_btnOrderHistoryActionPerformed
+
+    private void btnReorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReorderActionPerformed
+        pnlPlaceCancelOrder.setVisible(false);
+        scrlPnlOrderStatus.setVisible(false);
+        scrlPnlOrderHistory.setVisible(false);
+        pnlReorder.setVisible(true);
+        packFrmOrderItem();
+
+        cboSelectPastOrderID.setModel(customerController.loadOrderIDs(custID));
+    }//GEN-LAST:event_btnReorderActionPerformed
+
+    private void btnManageOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageOrdersActionPerformed
+        pnlPlaceCancelOrder.setVisible(true);//default
+        scrlPnlOrderStatus.setVisible(false);
+        scrlPnlOrderHistory.setVisible(false);
+        pnlReorder.setVisible(false);
+        packFrmOrderItem();
+    }//GEN-LAST:event_btnManageOrdersActionPerformed
+    
+    private void packFrmOrderItem(){
+        frmOrderItem.pack();
+        frmOrderItem.setLocationRelativeTo(null);
+        frmOrderItem.setVisible(true);
+    }
+    
+    private void btnConfirmReorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmReorderActionPerformed
+        if(Objects.requireNonNull(cboSelectPastOrderID.getSelectedItem()).equals("Select Order ID")){
+            JOptionPane.showMessageDialog(null, "Select an order ID", "Select Order ID", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if(Objects.requireNonNull(cboPastOption.getSelectedItem()).equals("Select an option")){
+            JOptionPane.showMessageDialog(null, "Select an option", "Select Option", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if(cboPastOption.getSelectedItem().equals("Delivery")){
+            JOptionPane.showMessageDialog(null, "An additional charge of RM5 will be added as delivery fee", "Delivery Fee", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        customerController.addOrder(custID, txtPastVendorID.getText(), txtPastItemIDs.getText(), Double.parseDouble(txtPastAmount.getText().substring(2)), (String) cboPastOption.getSelectedItem());
+    }//GEN-LAST:event_btnConfirmReorderActionPerformed
+
+    private void cboSelectOrderActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboSelectOrderActionActionPerformed
+        if(Objects.requireNonNull(cboSelectOrderAction.getSelectedItem()).equals("Place Order")){
+            btnConfirmNewOrder.setAlignmentX(LEFT_ALIGNMENT);
+            pnlPlaceOrder.setVisible(true);
+            pnlCancelOrder.setVisible(false);
+        } else if (cboSelectOrderAction.getSelectedItem().equals("Cancel Order")){
+            btnConfirmCancelOrder.setAlignmentX(LEFT_ALIGNMENT);
+            pnlPlaceOrder.setVisible(false);
+            pnlCancelOrder.setVisible(true);
+        } else {
+            pnlPlaceOrder.setVisible(false);
+            pnlCancelOrder.setVisible(false);
+        }
+        packFrmOrderItem();
+    }//GEN-LAST:event_cboSelectOrderActionActionPerformed
+
+    private void frmOrderItemWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_frmOrderItemWindowOpened
+        scrlPnlOrderStatus.setVisible(false);
+        scrlPnlOrderHistory.setVisible(false);
+        pnlReorder.setVisible(false);
+        pnlPlaceCancelOrder.setVisible(true);
+        pnlCancelOrder.setVisible(false);
+        pnlPlaceOrder.setVisible(false);
+        
+        packFrmOrderItem();
+    }//GEN-LAST:event_frmOrderItemWindowOpened
 
     /**
      * @param args the command line arguments
@@ -433,16 +953,30 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnComplaint;
+    private javax.swing.JButton btnConfirmCancelOrder;
     private javax.swing.JButton btnConfirmComplaint;
+    private javax.swing.JButton btnConfirmNewOrder;
+    private javax.swing.JButton btnConfirmReorder;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnManageOrders;
+    private javax.swing.JButton btnOrderHistory;
+    private javax.swing.JButton btnOrderStatus;
+    private javax.swing.JButton btnPlaceCancelOrder;
     private javax.swing.JButton btnReadReviews;
+    private javax.swing.JButton btnReorder;
     private javax.swing.JButton btnReviews;
     private javax.swing.JButton btnSubmitReview;
     private javax.swing.JButton btnTransactionHistory;
     private javax.swing.JButton btnViewMenu;
+    private javax.swing.JComboBox<String> cboCancelOrderID;
+    private javax.swing.JComboBox<String> cboNewOrderOption;
+    private javax.swing.JComboBox<String> cboNewOrderVendorID;
+    private javax.swing.JComboBox<String> cboPastOption;
+    private javax.swing.JComboBox<String> cboSelectOrderAction;
     private javax.swing.JComboBox<String> cboSelectOrderID;
+    private javax.swing.JComboBox<String> cboSelectPastOrderID;
     private javax.swing.JComboBox<String> cboSelectTargetID;
+    private javax.swing.JCheckBox chkBox;
     private javax.swing.JFrame frmOrderItem;
     private javax.swing.JFrame frmProvideComplaint;
     private javax.swing.JFrame frmProvideReview;
@@ -454,16 +988,42 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblWelcome;
+    private javax.swing.JPanel pnlCancelOrder;
+    private javax.swing.JPanel pnlChkBoxItems;
     private javax.swing.JPanel pnlCustomer;
+    private javax.swing.JPanel pnlOrderButtons;
+    private javax.swing.JPanel pnlOrderContent;
+    private javax.swing.JPanel pnlPlaceCancelOrder;
+    private javax.swing.JPanel pnlPlaceOrder;
+    private javax.swing.JPanel pnlReorder;
+    private javax.swing.JScrollPane scrlPnlOrderHistory;
+    private javax.swing.JScrollPane scrlPnlOrderStatus;
     private javax.swing.JSpinner spnRating;
+    private javax.swing.JTable tblOrderHistory;
+    private javax.swing.JTable tblOrderStatus;
     private javax.swing.JTable tblTransactionHistory;
     private javax.swing.JTable tblViewMenu;
+    private javax.swing.JTextArea txtCancelOrderItemIDs;
+    private javax.swing.JTextField txtCancelOrderOption;
+    private javax.swing.JTextField txtCancelOrderStatus;
+    private javax.swing.JTextField txtCancelOrderTimestamp;
+    private javax.swing.JTextField txtCancelOrderTotalAmount;
+    private javax.swing.JTextField txtCancelOrderVendorID;
     private javax.swing.JTextArea txtComment;
     private javax.swing.JTextArea txtComplaintMessage;
     private javax.swing.JTextField txtComplaintTitle;
     private javax.swing.JTextField txtCustID;
     private javax.swing.JTextArea txtCustomerReviews;
+    private javax.swing.JTextField txtNewOrderID;
+    private javax.swing.JTextField txtNewOrderTimestamp;
+    private javax.swing.JTextField txtNewOrderTotalAmount;
+    private javax.swing.JTextField txtPastAmount;
+    private javax.swing.JTextArea txtPastItemIDs;
+    private javax.swing.JTextField txtPastOrderTime;
+    private javax.swing.JTextField txtPastVendorID;
     // End of variables declaration//GEN-END:variables
 }
