@@ -504,14 +504,14 @@ public class AdministratorDashboard extends javax.swing.JFrame {
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
         String action = String.valueOf(cboSelectAction.getSelectedItem());
-        String user = String.valueOf(cboSelectUser.getSelectedItem());
+        String userType = String.valueOf(cboSelectUser.getSelectedItem());
 
         switch (action){
             case "Create new user" -> {
                 int confirm = JOptionPane.showConfirmDialog(null, "Create new user?", "Confirm creation", JOptionPane.YES_NO_OPTION);
 
                 if(confirm == JOptionPane.YES_OPTION){
-                    adminController.createUser(user, txtUserName.getText(), txtUserPassword.getText());
+                    adminController.createUser(userType, txtUserName.getText(), txtUserPassword.getText());
                     JOptionPane.showMessageDialog(null, "New user added");
                 }
             }

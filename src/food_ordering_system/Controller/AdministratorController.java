@@ -1,36 +1,38 @@
 package food_ordering_system.Controller;
 
 import food_ordering_system.Utilities.IDGenerator;
+import food_ordering_system.Models.*;
 
-import javax.swing.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class AdministratorController {
     private String userFilePath;
+    private User user;
 
-    private String getUserFilePath(String user) {
-        String basePath = "src/food_ordering_system/Data/";
-        return switch (user) {
-            case "Customer" -> basePath + "customers.txt";
-            case "Vendor" -> basePath + "vendors.txt";
-            case "Runner" -> basePath + "delivery_runners.txt";
-            default -> null;
-        };
-    }
-
-    public void createUser(String user, String name, String password) {
-        userFilePath = getUserFilePath(user);
+    public void createUser(String userType, String name, String password) {
         if (userFilePath == null) return;
 
-        String userID = new IDGenerator().generateUserID(user, userFilePath);
-        String defaultValue = "0.0";
+        String userID = new IDGenerator().generateUserID(userType, userFilePath);
+
+        switch (userType) {
+            case "Customer" -> {
+                userFilePath = new Customer("", "", "", 0.0).getFilePath();
+                user = new Customer(userID, name, password, 0.0);
+            }
+            case "Vendor" -> {
+                userFilePath = new Vendor("", "", "", 0.0).getFilePath();
+                user = new Vendor(userID, name, password, 0.0);
+            }
+            case "Runner" -> {
+                userFilePath = new Runner("", "", "", 0.0).getFilePath();
+                user = new Runner(userID, name, password, 0.0);
+            }
+        }
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(userFilePath, true))) {
-            bw.write(userID + ", " + name + ", " + password + ", " + defaultValue);
+            bw.write(user.getID() + ", " + user.getName() + ", " + user.getPassword() + ", " + user.getValue());
             bw.newLine();
         } catch (IOException e) {
             throw new RuntimeException("Error creating user: " + e.getMessage());

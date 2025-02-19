@@ -1,2 +1,2 @@
 Customer ID, Name, Password, Credit
-C001, John Doe, password123,50.00
+C001,John Sarip,password123,60.00
