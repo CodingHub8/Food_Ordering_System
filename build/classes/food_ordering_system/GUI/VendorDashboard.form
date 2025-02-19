@@ -34,13 +34,13 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTextField" name="txtSearchItemID">
+            <Component class="javax.swing.JTextField" name="txtSearchItemKey">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Search Item ID"/>
+                <Property name="text" type="java.lang.String" value="Search Item ID or Item Name"/>
               </Properties>
               <Events>
-                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtSearchItemIDFocusGained"/>
-                <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtSearchItemIDFocusLost"/>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtSearchItemKeyFocusGained"/>
+                <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtSearchItemKeyFocusLost"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnSearchItem">
@@ -55,6 +55,13 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JTextField" name="txtItemID">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="ID"/>
+            <Property name="focusable" type="boolean" value="false"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JTextField" name="txtItemName">
           <Properties>
             <Property name="text" type="java.lang.String" value="Name"/>

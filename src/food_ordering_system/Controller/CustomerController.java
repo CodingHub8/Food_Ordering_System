@@ -1,5 +1,7 @@
 package food_ordering_system.Controller;
 
+import food_ordering_system.Utilities.CustomTableModel;
+
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.io.*;
@@ -58,7 +60,7 @@ public class CustomerController {
             columnNames[i] = columnNames[i].trim();
         }
 
-        return new VendorController.CustomTableModel(data, columnNames);
+        return new CustomTableModel(data, columnNames);
     }
 
     private List<String[]> readMenuDataFromFile(){
@@ -86,7 +88,7 @@ public class CustomerController {
             columnNames[i] = columnNames[i].trim();
         }
 
-        return new VendorController.CustomTableModel(data, columnNames);
+        return new CustomTableModel(data, columnNames);
     }
 
     public String[] viewItems(){

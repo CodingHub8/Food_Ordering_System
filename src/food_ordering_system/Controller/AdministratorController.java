@@ -1,6 +1,6 @@
 package food_ordering_system.Controller;
 
-import food_ordering_system.Utilities.IDGenerator;
+import food_ordering_system.Utilities.IDUtility;
 import food_ordering_system.Models.*;
 
 import java.io.*;
@@ -14,7 +14,7 @@ public class AdministratorController {
     public void createUser(String userType, String name, String password) {
         if (userFilePath == null) return;
 
-        String userID = new IDGenerator().generateUserID(userType, userFilePath);
+        String userID = new IDUtility().generateUserID(userType, userFilePath);
 
         switch (userType) {
             case "Customer" -> {
@@ -187,7 +187,7 @@ public class AdministratorController {
             }
 
             // Generate transaction ID and timestamp
-            String transactionID = new IDGenerator().generateTransactionID();
+            String transactionID = new IDUtility().generateTransactionID();
             String timestamp = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
 
             // Write transaction to transactions.txt
@@ -199,7 +199,7 @@ public class AdministratorController {
             }
 
             // Generate notification
-            String notificationID = new IDGenerator().generateNotificationID();
+            String notificationID = new IDUtility().generateNotificationID();
             String message = String.format("Successfully Top Up RM%.2f at %s", credit, timestamp);
             String notificationEntry = String.format("%s,%s,Credit Top Up,%s,false", notificationID, custID, message);
 

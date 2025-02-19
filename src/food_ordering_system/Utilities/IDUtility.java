@@ -1,8 +1,9 @@
 package food_ordering_system.Utilities;
 
 import java.io.*;
+import java.util.*;
 
-public class IDGenerator {
+public class IDUtility {
     public String generateUserID(String userType, String userFilePath) {
         String prefix = userType.equals("Customer") ? "C" :
                 userType.equals("Vendor") ? "V" :
@@ -87,4 +88,19 @@ public class IDGenerator {
 
         return String.format("%sI%03d", vendorID, nextID); // Format as V###I###
     }
+
+    public List<String> parseItemIDs(String input) {
+        // Remove the square brackets (if present)
+        String trimmed = input.trim();
+        if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
+            trimmed = trimmed.substring(1, trimmed.length() - 1);
+        }
+
+        // Split by whitespace (one or more spaces)
+        String[] items = trimmed.split("\\s+");
+
+        // Return as List<String>
+        return Arrays.asList(items);
+    }
+
 }

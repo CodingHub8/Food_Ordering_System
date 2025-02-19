@@ -1,6 +1,7 @@
 package food_ordering_system.Controller;
 
-import javax.swing.table.AbstractTableModel;
+import food_ordering_system.Utilities.CustomTableModel;
+
 import javax.swing.table.TableModel;
 import java.io.*;
 import java.text.ParseException;
@@ -92,41 +93,6 @@ public class DeliveryRunnerController {
         return reviews;
     }
 
-    static class CustomTableModel extends AbstractTableModel {
-        private List<String[]> data;
-        private String[] columnNames;
-
-        public CustomTableModel(List<String[]> data, String[] columnNames) {
-            this.data = data;
-            this.columnNames = columnNames;
-        }
-
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return true;
-        }
-
-        @Override
-        public int getRowCount() {
-            return data.size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return columnNames.length;
-        }
-
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            return data.get(rowIndex)[columnIndex];
-        }
-
-        @Override
-        public String getColumnName(int column) {
-            return columnNames[column];
-        }
-    }
-
     public TableModel loadData(String runnerID, String... status) {
         List<String[]> data = readTaskData(runnerID, status);
 
@@ -137,7 +103,7 @@ public class DeliveryRunnerController {
             columnNames[i] = columnNames[i].trim();
         }
 
-        return new DeliveryRunnerController.CustomTableModel(data, columnNames);
+        return new CustomTableModel(data, columnNames);
     }
 
     private List<String[]> readTaskData(String vendorID, String... status) {

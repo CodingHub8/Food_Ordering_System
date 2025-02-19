@@ -2,6 +2,7 @@ package food_ordering_system.GUI;
 
 import food_ordering_system.Controller.VendorController;
 import food_ordering_system.Utilities.GraphPanel;
+import food_ordering_system.Utilities.IDUtility;
 import food_ordering_system.Utilities.LoginRedirect;
 import food_ordering_system.Utilities.Notifications;
 
@@ -56,8 +57,9 @@ public class VendorDashboard extends javax.swing.JFrame {
         frmItemManagement = new javax.swing.JFrame();
         cboSelectAction = new javax.swing.JComboBox<>();
         pnlSearchBar = new javax.swing.JPanel();
-        txtSearchItemID = new javax.swing.JTextField();
+        txtSearchItemKey = new javax.swing.JTextField();
         btnSearchItem = new javax.swing.JButton();
+        txtItemID = new javax.swing.JTextField();
         txtItemName = new javax.swing.JTextField();
         txtItemPrice = new javax.swing.JTextField();
         txtItemDesc = new javax.swing.JTextField();
@@ -102,16 +104,16 @@ public class VendorDashboard extends javax.swing.JFrame {
 
         pnlSearchBar.setLayout(new javax.swing.BoxLayout(pnlSearchBar, javax.swing.BoxLayout.LINE_AXIS));
 
-        txtSearchItemID.setText("Search Item ID");
-        txtSearchItemID.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtSearchItemKey.setText("Search Item ID or Item Name");
+        txtSearchItemKey.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                txtSearchItemIDFocusGained(evt);
+                txtSearchItemKeyFocusGained(evt);
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                txtSearchItemIDFocusLost(evt);
+                txtSearchItemKeyFocusLost(evt);
             }
         });
-        pnlSearchBar.add(txtSearchItemID);
+        pnlSearchBar.add(txtSearchItemKey);
 
         btnSearchItem.setIcon(new javax.swing.JLabel() {
             public javax.swing.Icon getIcon() {
@@ -132,6 +134,11 @@ public class VendorDashboard extends javax.swing.JFrame {
         pnlSearchBar.add(btnSearchItem);
 
         frmItemManagement.getContentPane().add(pnlSearchBar);
+
+        txtItemID.setEditable(false);
+        txtItemID.setText("ID");
+        txtItemID.setFocusable(false);
+        frmItemManagement.getContentPane().add(txtItemID);
 
         txtItemName.setText("Name");
         txtItemName.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -428,8 +435,9 @@ public class VendorDashboard extends javax.swing.JFrame {
 
     private void initializeItemManagement(){
         pnlSearchBar.setVisible(false);
-        txtSearchItemID.setText("Search Item ID");
+        txtSearchItemKey.setText("Search Item ID");
 
+        txtItemID.setVisible(false);
         txtItemName.setText("Name");
         txtItemName.setEditable(false);
         txtItemName.setVisible(false);
@@ -464,6 +472,9 @@ public class VendorDashboard extends javax.swing.JFrame {
 
         switch (action){
             case "Add Item" -> {
+                txtItemID.setText("Next item ID: " + new IDUtility().generateItemID(vendorID, "src/food_ordering_system/Data/menu_items.txt"));
+                
+                txtItemID.setVisible(true);
                 txtItemName.setVisible(true);
                 txtItemName.setEditable(true);
                 txtItemName.setFocusable(true);
@@ -516,26 +527,26 @@ public class VendorDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cboSelectActionActionPerformed
 
-    private void txtSearchItemIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchItemIDFocusGained
-        if(txtSearchItemID.getText().equals("Search Item ID")){
-            txtSearchItemID.setText("");
+    private void txtSearchItemKeyFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchItemKeyFocusGained
+        if(txtSearchItemKey.getText().equals("Search Item ID")){
+            txtSearchItemKey.setText("");
         }
-    }//GEN-LAST:event_txtSearchItemIDFocusGained
+    }//GEN-LAST:event_txtSearchItemKeyFocusGained
 
-    private void txtSearchItemIDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchItemIDFocusLost
-        if(txtSearchItemID.getText().isEmpty()){
-            txtSearchItemID.setText("Search Item ID");
+    private void txtSearchItemKeyFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchItemKeyFocusLost
+        if(txtSearchItemKey.getText().isEmpty()){
+            txtSearchItemKey.setText("Search Item ID");
         }
-    }//GEN-LAST:event_txtSearchItemIDFocusLost
+    }//GEN-LAST:event_txtSearchItemKeyFocusLost
 
     private void btnSearchItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchItemActionPerformed
-        String[] itemData = vendorController.viewItem(vendorID, txtSearchItemID.getText());
+        String[] itemData = vendorController.viewItem(vendorID, txtSearchItemKey.getText());
 
         if(itemData != null){
             txtItemName.setText(itemData[2]);
             txtItemPrice.setText(itemData[3]);
             txtItemDesc.setText(itemData[4]);
-        } else if (txtSearchItemID.getText().equals("Search Item ID")){
+        } else if (txtSearchItemKey.getText().equals("Search Item ID")){
             JOptionPane.showMessageDialog(null, "Enter item ID to search");
         } else {
             JOptionPane.showMessageDialog(null, "Item not found");
@@ -589,7 +600,7 @@ public class VendorDashboard extends javax.swing.JFrame {
             }
 
             case "Update Item" -> {
-                if(txtSearchItemID.getText().equals("Search Item ID") && txtItemName.getText().equals("Name") &&
+                if(txtSearchItemKey.getText().equals("Search Item ID") && txtItemName.getText().equals("Name") &&
                         !txtItemPrice.getText().chars().allMatch(Character::isDigit) && txtItemDesc.getText().equals("Description")){{
                     JOptionPane.showMessageDialog(null, "Search item ID to update");
                     return;
@@ -598,7 +609,7 @@ public class VendorDashboard extends javax.swing.JFrame {
                 int confirm = JOptionPane.showConfirmDialog(null, "Update item info?", "Confirm update", JOptionPane.YES_NO_OPTION);
 
                 if(confirm == JOptionPane.YES_OPTION){
-                    vendorController.updateItem(vendorID, txtSearchItemID.getText(), txtItemName.getText(), txtItemPrice.getText(), txtItemDesc.getText());
+                    vendorController.updateItem(vendorID, txtSearchItemKey.getText(), txtItemName.getText(), txtItemPrice.getText(), txtItemDesc.getText());
                     JOptionPane.showMessageDialog(null, "Item data updated");
                 } else {
                     JOptionPane.showMessageDialog(null, "Enter item ID to search");
@@ -606,7 +617,7 @@ public class VendorDashboard extends javax.swing.JFrame {
             }
 
             case "Delete Item" -> {
-                if(txtSearchItemID.getText().equals("Search Item ID") && txtItemName.getText().equals("Name") &&
+                if(txtSearchItemKey.getText().equals("Search Item ID") && txtItemName.getText().equals("Name") &&
                         !txtItemPrice.getText().chars().allMatch(Character::isDigit) && txtItemDesc.getText().equals("Description")){{
                     JOptionPane.showMessageDialog(null, "Search item ID to delete");
                     return;
@@ -615,9 +626,9 @@ public class VendorDashboard extends javax.swing.JFrame {
                 int confirm = JOptionPane.showConfirmDialog(null, "Delete item?", "Confirm deletion", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
 
                 if(confirm == JOptionPane.YES_OPTION){
-                    vendorController.deleteItem(vendorID, txtSearchItemID.getText());
+                    vendorController.deleteItem(vendorID, txtSearchItemKey.getText());
                     JOptionPane.showMessageDialog(null, "Item data removed");
-                    txtSearchItemID.setText("Search Item ID");
+                    txtSearchItemKey.setText("Search Item ID");
                     txtItemName.setText("Name");
                     txtItemPrice.setText("Price (RM)");
                     txtItemDesc.setText("Description");
@@ -784,9 +795,10 @@ public class VendorDashboard extends javax.swing.JFrame {
     private javax.swing.JTable tblOrderHistory;
     private javax.swing.JTable tblOrders;
     private javax.swing.JTextField txtItemDesc;
+    private javax.swing.JTextField txtItemID;
     private javax.swing.JTextField txtItemName;
     private javax.swing.JTextField txtItemPrice;
     private javax.swing.JTextArea txtReviews;
-    private javax.swing.JTextField txtSearchItemID;
+    private javax.swing.JTextField txtSearchItemKey;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,6 +1,7 @@
 Item ID, Vendor ID, Name, Price (RM), Description
-V001I001, V001,Nasi Goreng Cina,4.50,Nasi Goreng tapi cina yang goreng
-V001I002, V001, Mee Goreng, 4.50, Mee Goreng biasa
-V001I003, V001, Mee Hoon Sup, 5.00, Sup Ayam
-V002I001, V002, Sirap Ais, 1.50, Sirap biasa
-V002I002, V002, Teh Ais, 1.50, Teh ais Kaw
+V001I001, V001, Nasi Goreng Cina, 4.5, Nasi Goreng tapi cina yang goreng
+V001I002, V001, Mee Goreng, 4.5, Mee Goreng biasa
+V001I003, V001, Mee Hoon Sup, 5.0, Sup Ayam
+V001I004, V001, Telur Goreng, 1.5, Telur Gred B
+V002I001, V002, Sirap Ais, 1.5, Sirap biasa
+V002I002, V002, Teh Ais, 1.5, Teh ais Kaw

@@ -1,8 +1,9 @@
 package food_ordering_system.Controller;
 
-import food_ordering_system.Utilities.IDGenerator;
+import food_ordering_system.Models.*;
+import food_ordering_system.Utilities.CustomTableModel;
+import food_ordering_system.Utilities.IDUtility;
 
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.io.*;
 import java.text.*;
@@ -13,6 +14,8 @@ public class VendorController {
     private final String vendorsFilePath = "src/food_ordering_system/Data/vendors.txt";
     private final String ordersFilePath = "src/food_ordering_system/Data/orders.txt";
     private final String itemsFilePath = "src/food_ordering_system/Data/menu_items.txt";
+    private List<Order> orders = new ArrayList<>();
+    private List<MenuItem> items = new ArrayList<>();
 
     public String[] getVendorDetails(String vendorID){
         String[] vendor = new String[4];
@@ -78,7 +81,7 @@ public class VendorController {
                 double orderAmount = Double.parseDouble(parts[4]); // Extract total amount
 
                 // Parse date from timestamp
-                String key = getString(timestamp, orderTimestamp);
+                String key = getDateFormat(timestamp, orderTimestamp);
 
                 // Add revenue to the respective key
                 if(parts[2].trim().equals(vendorID)){
@@ -95,7 +98,7 @@ public class VendorController {
         return new ArrayList<>(revenueMap.values());
     }
 
-    private static String getString(String timestamp, String orderTimestamp) throws ParseException {
+    private static String getDateFormat(String timestamp, String orderTimestamp) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Date date = sdf.parse(orderTimestamp);
 
@@ -126,41 +129,51 @@ public class VendorController {
         return key;
     }
 
+    private String getItems(){
+        String header = "";
+        try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
+            String line;
+            header = br.readLine();//skip header
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                for(int i = 0; i < parts.length; i++){
+                    parts[i] = parts[i].trim();
+                }
+                items.add(new MenuItem(parts[0], parts[1], parts[2], Double.parseDouble(parts[3]), parts[4]));
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading items file: " + e.getMessage());
+        }
+        return header;
+    }
+
     public void createItem(String vendorID, String itemName, String itemPrice, String itemDesc){
         if (vendorID == null) {
             System.out.println("Invalid file path or vendor ID.");
             return;
         }
 
-        String newItemID = new IDGenerator().generateItemID(vendorID, itemsFilePath); // Generate new Item ID
-
-        // Create a new item line
-        String newItem = String.format("%s, %s, %s, %.2f, %s", newItemID, vendorID, itemName, Double.parseDouble(itemPrice), itemDesc);
-
-        List<String> items = new ArrayList<>();
-        items.add(newItem);
+        String newItemID = new IDUtility().generateItemID(vendorID, itemsFilePath); // Generate new Item ID
 
         // Read all existing items
-        try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                items.add(line.trim());
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading items file: " + e.getMessage());
-        }
+        String header = getItems();
+
+        //add the new item into the list
+        items.add(new MenuItem(newItemID, vendorID, itemName, Double.parseDouble(itemPrice), itemDesc));
 
         // Sort the items by Item ID
         items.sort((item1, item2) -> {
-            String id1 = item1.split(",")[0].trim();
-            String id2 = item2.split(",")[0].trim();
+            String id1 = item1.getID().split(",")[0].trim();
+            String id2 = item2.getID().split(",")[0].trim();
             return id1.compareTo(id2);
         });
 
         // Write the sorted items back to the file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(itemsFilePath))) {
-            for (String item : items) {
-                bw.write(item);
+            bw.write(header);//write header
+            bw.newLine();
+            for (MenuItem item : items) {
+                bw.write(item.getID() + ", " + item.getVendorID() + ", " + item.getName() + ", " + item.getPrice() + ", " + item.getDescription());
                 bw.newLine();
             }
         } catch (IOException e) {
@@ -168,23 +181,24 @@ public class VendorController {
         }
     }
 
-    public void updateItem(String vendorID, String itemID, String newItemName, String newItemPrice, String newItemDesc){
-        List<String> fileContents = new ArrayList<>();
+    public void updateItem(String vendorID, String itemKey, String newItemName, String newItemPrice, String newItemDesc){
         boolean updated = false;
+        String header = getItems();
 
         try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
             String line;
+            int i = 0;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
 
-                if (parts[0].trim().equals(itemID) && parts[1].trim().equals(vendorID)) {
-                    parts[2] = newItemName;
-                    parts[3] = newItemPrice;
-                    parts[4] = newItemDesc;
-                    line = String.join(",", parts);
+                if ((parts[0].trim().equals(itemKey) || parts[2].trim().equalsIgnoreCase(itemKey)) && parts[1].trim().equals(vendorID)) {
+                    items.get(i - 1).setName(newItemName);
+                    items.get(i - 1).setPrice(Double.parseDouble(newItemPrice));
+                    items.get(i - 1).setDescription(newItemDesc);
                     updated = true;
+                    break;
                 }
-                fileContents.add(line);
+                i++;
             }
         } catch (IOException e) {
             throw new RuntimeException("Error updating item: " + e.getMessage());
@@ -192,8 +206,10 @@ public class VendorController {
 
         if (updated) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(itemsFilePath))) {
-                for (String line : fileContents) {
-                    bw.write(line);
+                bw.write(header);//header
+                bw.newLine();
+                for (MenuItem item : items) {
+                    bw.write(item.getID() + ", " + item.getVendorID() + ", " + item.getName() + ", " + item.getPrice() + ", " + item.getDescription());
                     bw.newLine();
                 }
             } catch (IOException e) {
@@ -202,14 +218,14 @@ public class VendorController {
         }
     }
 
-    public void deleteItem(String vendorID, String itemID){
+    public void deleteItem(String vendorID, String itemKey){
         List<String> fileContents = new ArrayList<>();
         boolean found = false;
 
         try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (!line.startsWith(itemID)) {
+                if (!line.contains(itemKey) && !vendorID.equalsIgnoreCase(itemKey)) {
                     fileContents.add(line);
                 } else {
                     found = true;
@@ -231,7 +247,7 @@ public class VendorController {
         }
     }
 
-    public String[] viewItem(String vendorID, String itemID) {
+    public String[] viewItem(String vendorID, String itemKey) {
         String[] itemData = new String[5];
 
         try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
@@ -241,7 +257,8 @@ public class VendorController {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
 
-                if(parts[0].trim().startsWith(vendorID) && parts[0].trim().equals(itemID) && parts[1].trim().equals(vendorID)) {//found
+                if(parts[0].trim().startsWith(vendorID) && (parts[0].trim().equals(itemKey) || parts[2].trim().equalsIgnoreCase(itemKey))
+                   && parts[1].trim().equals(vendorID)) {//found
                     itemData[0] = parts[0].trim();//item ID
                     itemData[1] = parts[1].trim();//vendor ID
                     itemData[2] = parts[2].trim();//name
@@ -256,43 +273,21 @@ public class VendorController {
         return null;//not found
     }
 
-    static class CustomTableModel extends AbstractTableModel {
-        private List<String[]> data;
-        private String[] columnNames;
-
-        public CustomTableModel(List<String[]> data, String[] columnNames) {
-            this.data = data;
-            this.columnNames = columnNames;
-        }
-
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return true;
-        }
-
-        @Override
-        public int getRowCount() {
-            return data.size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return columnNames.length;
-        }
-
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            return data.get(rowIndex)[columnIndex];
-        }
-
-        @Override
-        public String getColumnName(int column) {
-            return columnNames[column];
-        }
-    }
-
     public TableModel loadData(String vendorID, String... status) {
-        List<String[]> data = readOrderData(vendorID, status);
+        List<String[]> data = new ArrayList<>();
+
+        for(Order order : readOrderData(vendorID, status)){
+            String[] row = new String[8];
+            row[0] = order.getOrderID();
+            row[1] = order.getCustomerID();
+            row[2] = order.getVendorID();
+            row[3] = "[" + String.join(" ", order.getItemIDs()) + "]";
+            row[4] = String.valueOf(order.getTotalAmount());
+            row[5] = order.getStatus();
+            row[6] = order.getOption();
+            row[7] = order.getTimestamp();
+            data.add(row);
+        }
 
         String header = "Order ID, Customer ID, Vendor ID, itemID(s), Total Amount (RM), Status, Option, Timestamp";
         String[] columnNames = header.split(",");
@@ -304,22 +299,28 @@ public class VendorController {
         return new CustomTableModel(data, columnNames);
     }
 
-    private List<String[]> readOrderData(String vendorID, String... status) {
-        List<String[]> data = new ArrayList<>();
+    private List<Order> readOrderData(String vendorID, String... status) {
+        orders.clear();//to prevent duplicate entry
+
         try (BufferedReader br = new BufferedReader(new FileReader(ordersFilePath))) {
             String line;
             br.readLine();// skip header
             while ((line = br.readLine()) != null) {
                 String[] row = line.split(",");
+                List<String> itemIDs = new IDUtility().parseItemIDs(row[3]);
 
-                if(row[2].trim().equals(vendorID)) {
+                for(int i = 0; i < row.length; i++){
+                    row[i] = row[i].trim();
+                }
+
+                if(row[2].equals(vendorID)) {
                     if(status.length > 1){
-                        if(row[5].trim().equals(status[0]) || row[5].trim().equals(status[1])){
-                            data.add(row);
+                        if(row[5].equals(status[0]) || row[5].equals(status[1])){
+                            orders.add(new Order(row[0], row[1], row[2], itemIDs, Double.parseDouble(row[4]), row[5], row[6], row[7]));
                         }
                     } else {
-                        if(row[5].trim().equals(status[0])){
-                            data.add(row);
+                        if(row[5].equals(status[0])){
+                            orders.add(new Order(row[0], row[1], row[2], itemIDs, Double.parseDouble(row[4]), row[5], row[6], row[7]));
                         }
                     }
                 }
@@ -327,7 +328,7 @@ public class VendorController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return data;
+        return orders;
     }
 
     public void updateOrderStatusInFile(String orderID, String newStatus) {
@@ -337,6 +338,13 @@ public class VendorController {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
+
+                for(Order order : orders){
+                    if(order.getOrderID().equals(orderID)){
+                        order.setStatus(newStatus);//update the list
+                        break;
+                    }
+                }
 
                 if (parts[0].trim().equals(orderID)) {
                     parts[5] = newStatus; // Update status
