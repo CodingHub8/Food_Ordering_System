@@ -1,17 +1,12 @@
 package food_ordering_system.GUI;
 
 import food_ordering_system.Controller.VendorController;
-import food_ordering_system.Utilities.GraphPanel;
-import food_ordering_system.Utilities.IDUtility;
-import food_ordering_system.Utilities.LoginRedirect;
-import food_ordering_system.Utilities.Notifications;
+import food_ordering_system.Utilities.*;
+import food_ordering_system.Models.MenuItem;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Vector;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class VendorDashboard extends javax.swing.JFrame {
@@ -540,12 +535,12 @@ public class VendorDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSearchItemKeyFocusLost
 
     private void btnSearchItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchItemActionPerformed
-        String[] itemData = vendorController.viewItem(vendorID, txtSearchItemKey.getText());
+        MenuItem itemData = vendorController.viewItem(vendorID, txtSearchItemKey.getText());
 
         if(itemData != null){
-            txtItemName.setText(itemData[2]);
-            txtItemPrice.setText(itemData[3]);
-            txtItemDesc.setText(itemData[4]);
+            txtItemName.setText(itemData.getName());
+            txtItemPrice.setText(Double.toString(itemData.getPrice()));
+            txtItemDesc.setText(itemData.getDescription());
         } else if (txtSearchItemKey.getText().equals("Search Item ID")){
             JOptionPane.showMessageDialog(null, "Enter item ID to search");
         } else {

@@ -220,12 +220,15 @@ public class VendorController {
 
     public void deleteItem(String vendorID, String itemKey){
         List<String> fileContents = new ArrayList<>();
+        List<MenuItem> updatedItems = new ArrayList<>();
         boolean found = false;
 
         try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
             String line;
             while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
                 if (!line.contains(itemKey) && !vendorID.equalsIgnoreCase(itemKey)) {
+                    updatedItems.add(new MenuItem(parts[0], parts[1], parts[2], Double.parseDouble(parts[3]), parts[4]));
                     fileContents.add(line);
                 } else {
                     found = true;
@@ -235,10 +238,13 @@ public class VendorController {
             throw new RuntimeException("Error deleting user: " + e.getMessage());
         }
 
+        items = updatedItems;//replace with new data
+
         if (found) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(itemsFilePath))) {
-                for (String line : fileContents) {
-                    bw.write(line);
+                bw.write(fileContents.getFirst());//header
+                for (MenuItem item : updatedItems) {
+                    bw.write(item.getID() + ", " + item.getVendorID() + ", " + item.getName() + ", " + item.getPrice() + ", " + item.getDescription());
                     bw.newLine();
                 }
             } catch (IOException e) {
@@ -247,9 +253,7 @@ public class VendorController {
         }
     }
 
-    public String[] viewItem(String vendorID, String itemKey) {
-        String[] itemData = new String[5];
-
+    public MenuItem viewItem(String vendorID, String itemKey) {
         try (BufferedReader br = new BufferedReader(new FileReader(itemsFilePath))) {
             String line;
             br.readLine();  // Skip the header line
@@ -259,12 +263,7 @@ public class VendorController {
 
                 if(parts[0].trim().startsWith(vendorID) && (parts[0].trim().equals(itemKey) || parts[2].trim().equalsIgnoreCase(itemKey))
                    && parts[1].trim().equals(vendorID)) {//found
-                    itemData[0] = parts[0].trim();//item ID
-                    itemData[1] = parts[1].trim();//vendor ID
-                    itemData[2] = parts[2].trim();//name
-                    itemData[3] = parts[3].trim();//price
-                    itemData[4] = parts[4].trim();//description
-                    return itemData;
+                    return new MenuItem(parts[0].trim(), parts[1].trim(), parts[2].trim(), Double.parseDouble(parts[3]), parts[4].trim());
                 }
             }
         } catch (IOException e) {
