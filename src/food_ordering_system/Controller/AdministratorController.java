@@ -12,26 +12,29 @@ public class AdministratorController {
     private User user;
 
     public void createUser(String userType, String name, String password) {
-        if (userFilePath == null) return;
+        userFilePath =
+                userType.trim().equals("Customer") ? new Customer("", "", "", 0.0).getFilePath() :
+                userType.trim().equals("Vendor") ? new Vendor("", "", "", 0.0).getFilePath() :
+                userType.trim().equals("Runner") ? new Runner("", "", "", 0.0).getFilePath() : "";
 
         String userID = new IDUtility().generateUserID(userType, userFilePath);
 
         switch (userType) {
             case "Customer" -> {
-                userFilePath = new Customer("", "", "", 0.0).getFilePath();
                 user = new Customer(userID, name, password, 0.0);
             }
             case "Vendor" -> {
-                userFilePath = new Vendor("", "", "", 0.0).getFilePath();
                 user = new Vendor(userID, name, password, 0.0);
             }
             case "Runner" -> {
-                userFilePath = new Runner("", "", "", 0.0).getFilePath();
                 user = new Runner(userID, name, password, 0.0);
             }
         }
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(userFilePath, true))) {
+        System.out.println(userID);
+        System.out.println(user.getID());
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(user.getFilePath(), true))) {
             bw.write(user.getID() + ", " + user.getName() + ", " + user.getPassword() + ", " + user.getValue());
             bw.newLine();
         } catch (IOException e) {

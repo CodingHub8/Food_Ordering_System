@@ -7,7 +7,10 @@ public class Runner extends User {
     private double rating;
 
     public Runner(String ID, String name, String password, double rating) {
-        super(ID, name, password);
+        super(ID, name, password, rating);
+        this.ID = ID;
+        this.name = name;
+        this.password = password;
         this.rating = rating;
     }
 

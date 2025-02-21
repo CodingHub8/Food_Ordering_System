@@ -7,7 +7,10 @@ public class Customer extends User {
     private double credit;
 
     public Customer(String ID, String name, String password, double credit) {
-        super(ID, name, password);
+        super(ID, name, password, credit);
+        this.ID = ID;
+        this.name = name;
+        this.password = password;
         this.credit = credit;
     }
 

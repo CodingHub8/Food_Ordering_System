@@ -6,7 +6,10 @@ public class Admin extends User {
     private String password;
 
     public Admin(String ID, String name, String password) {
-        super(ID, name, password);
+        super(ID, name, password, 0.0);
+        this.ID = ID;
+        this.name = name;
+        this.password = password;
     }
 
     @Override

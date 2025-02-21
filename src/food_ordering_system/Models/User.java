@@ -6,7 +6,12 @@ public abstract class User {
     private String password;
     private double value;
 
-    public User(String ID, String name, String password){}
+    public User(String ID, String name, String password, double value) {
+        this.ID = ID;
+        this.name = name;
+        this.password = password;
+        this.value = value;
+    }
 
     public String getID() {
         return ID;

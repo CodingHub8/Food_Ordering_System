@@ -508,6 +508,11 @@ public class AdministratorDashboard extends javax.swing.JFrame {
 
         switch (action){
             case "Create new user" -> {
+                if (userType.equals("Select User")) {
+                    JOptionPane.showMessageDialog(null, "Select a user", "Select user", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
                 int confirm = JOptionPane.showConfirmDialog(null, "Create new user?", "Confirm creation", JOptionPane.YES_NO_OPTION);
 
                 if(confirm == JOptionPane.YES_OPTION){
